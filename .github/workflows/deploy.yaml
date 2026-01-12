@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+      - staging
+      - production
   workflow_dispatch:
     inputs:
       environment:
@@ -15,14 +17,14 @@ on:
           - production
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.inputs.environment || 'production' }}
+  group: ${{ github.workflow }}-${{ github.event.inputs.environment || 'staging' }}
   cancel-in-progress: false
 
 jobs:
   deploy:
     runs-on: ubuntu-22.04
     name: Deploy
-    environment: ${{ github.event.inputs.environment || 'production' }}
+    environment: ${{ github.event.inputs.environment || 'staging' }}
 
     steps:
       - name: Checkout code
@@ -57,13 +59,13 @@ jobs:
         run: |
           set -e
 
-          yarn opennextjs-cloudflare build --env ${{ github.event.inputs.environment || 'production' }}
+          yarn opennextjs-cloudflare build --env ${{ github.event.inputs.environment || 'staging' }}
 
           echo SUPABASE_SECRET_KEY="${{ secrets.SUPABASE_SECRET_KEY }}" >> /tmp/.env.worker
 
-          yarn wrangler versions secret bulk /tmp/.env.worker --env ${{ github.event.inputs.environment || 'production' }}
+          yarn wrangler versions secret bulk /tmp/.env.worker --env ${{ github.event.inputs.environment || 'staging' }}
 
-          yarn opennextjs-cloudflare upload --env ${{ github.event.inputs.environment || 'production' }} \
+          yarn opennextjs-cloudflare upload --env ${{ github.event.inputs.environment || 'staging' }} \
             --var "NEXT_PUBLIC_SUPABASE_URL:'${{ vars.NEXT_PUBLIC_SUPABASE_URL }}'" \
             --var "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY:'${{ vars.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}'" | tee /tmp/upload_output
 
@@ -72,4 +74,4 @@ jobs:
             echo "Warning: Could not find Worker Version ID in the upload output. Deploying latest version instead."
           fi
 
-          yarn wrangler versions deploy --env ${{ github.event.inputs.environment || 'production' }} $version_id@100 -y
+          yarn wrangler versions deploy --env ${{ github.event.inputs.environment || 'staging' }} $version_id@100 -y
