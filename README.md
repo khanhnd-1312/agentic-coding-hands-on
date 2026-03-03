@@ -153,26 +153,24 @@ Quy trình đầy đủ generate code với MoMorph (sử dụng slash commands 
 
 #### Ví dụ prompt cho từng command
 
-**1. `/momorph.constitution`** — Sinh coding standards cho project:
+**1. `/momorph.constitution`** — Tạo các quy tắc phát triển cần tuân thủ trong project:
 
 ```
-/momorph.constitution
-Generate constitution
+/momorph.constitution Viết clean code, tổ chức source code rõ ràng, ngắn gọn. Áp dụng các best practices với Next.js, Cloudflare Workers, Supabase. Ứng dụng cũng cần được đảm bảo responsive hỗ trợ tương thích với nhiều kích thước màn hình khác nhau, bao gồm từ mobile, tablet cho đến desktop. Ngoài ra, cũng lưu ý tuân thủ các tiêu chuẩn bảo mật secure coding practices owasp.
 ```
 
-**2. `/momorph.specify`** — Sinh spec từ Figma frame _(đã có sẵn, có thể skip)_:
+**2. `/momorph.specify`** — Tạo local specs + tổng hợp thông tin về figma design:
 
 ```
-/momorph.specify
-Build specifications for project based on the following Figma design items:
-1. Signin – fileKey: 9ypp4enmFmdK3YAFJLIu6C, frameId: 9276:19531
+/momorph.specify Tạo specs cho màn hình Login sau:
+https://momorph.ai/files/Z9KFZ0aAoOfkVEIPuwwkZl/frames/662:14387
 ```
 
-**3. `/momorph.reviewspecify`** — Review spec đã sinh _(đã có sẵn, có thể skip)_:
+**3. `/momorph.reviewspecify`** — Review spec đã sinh:
 
 ```
-/momorph.reviewspecify
-1. Signin – fileKey: 9ypp4enmFmdK3YAFJLIu6C, frameId: 9276:19531
+/momorph.reviewspecify Review specs cho màn hình Login sau:
+https://momorph.ai/files/Z9KFZ0aAoOfkVEIPuwwkZl/frames/662:14387
 ```
 
 > Nên chạy lệnh này 2–3 lần để spec được review kỹ hơn.
@@ -180,16 +178,15 @@ Build specifications for project based on the following Figma design items:
 **4. `/momorph.plan`** — Tạo implementation plan:
 
 ```
-/momorph.plan
-Plan for the following Figma design items:
-1. Signin – fileKey: 9ypp4enmFmdK3YAFJLIu6C, frameId: 9276:19531
+/momorph.plan Sử dụng Supabase Auth + Next.js + Cloudflare. Hãy tạo kế hoạch phát triển màn hình Login:
+https://momorph.ai/files/Z9KFZ0aAoOfkVEIPuwwkZl/frames/662:14387
 ```
 
 **5. `/momorph.reviewplan`** — Review plan đã sinh:
 
 ```
-/momorph.reviewplan
-1. Signin – fileKey: 9ypp4enmFmdK3YAFJLIu6C, frameId: 9276:19531
+/momorph.reviewplan Hãy review lại plan của màn hình Login:
+https://momorph.ai/files/Z9KFZ0aAoOfkVEIPuwwkZl/frames/662:14387
 ```
 
 > Nên chạy lệnh này 2–3 lần để plan được review kỹ hơn.
@@ -197,17 +194,15 @@ Plan for the following Figma design items:
 **6. `/momorph.tasks`** — Chia plan thành danh sách tasks:
 
 ```
-/momorph.tasks
-Break tasks for the following Figma design items:
-1. Signin – fileKey: 9ypp4enmFmdK3YAFJLIu6C, frameId: 9276:19531
+/momorph.tasks Hãy phân chia công việc phát triển màn Login:
+https://momorph.ai/files/Z9KFZ0aAoOfkVEIPuwwkZl/frames/662:14387
 ```
 
 **7. `/momorph.implement`** — Thực thi tasks, sinh code:
 
 ```
-/momorph.implement
-Execute the implementation plan by processing and executing all tasks defined for the following Figma design items:
-1. Signin – fileKey: 9ypp4enmFmdK3YAFJLIu6C, frameId: 9276:19531
+/momorph.implement Tiến hành phát triển màn Login:
+https://momorph.ai/files/Z9KFZ0aAoOfkVEIPuwwkZl/frames/662:14387
 ```
 
 ### Bước 10: Chạy development server
