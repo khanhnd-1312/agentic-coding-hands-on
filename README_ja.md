@@ -1,13 +1,15 @@
 # Agentic Coding Hands-on
 
-Sun\* 社内向け **Agentic Coding** ハンズオン研修用リポジトリです。受講者は **MoMorph + Claude Code** を使用して、Figma デザインからコードを生成します。
+[![Vietnamese](https://img.shields.io/badge/Vietnamese-green.svg)](https://github.com/sun-asterisk-internal/agentic-coding-hands-on/blob/main/README.md) [![Japanese](https://img.shields.io/badge/Japanese-yellow.svg)](https://github.com/sun-asterisk-internal/agentic-coding-hands-on/blob/main/README_ja.md) [![English](https://img.shields.io/badge/English-blue.svg)](https://github.com/sun-asterisk-internal/agentic-coding-hands-on/blob/main/README_en.md)
+
+Sun\* 社内向け **Agentic Coding** ハンズオン研修用リポジトリです。受講者は **MoMorph + Claude Code** を使用して、Figma デザインからコードを生成します。Claude Code 以外にも、**Copilot**、**Gemini**、**Windsurf** などの AI コーディングエージェントも同様の手順で使用できます。本ハンズオンでは、**Claude Code** を使用することを前提としています。
 
 ## ブランチ
 
 このリポジトリには 2 つのブランチがあります:
 
-- **`main`** — 初期ソースコード。受講者はこのリポジトリをクローンしてこのブランチで作業します。MoMorph CLI をインストールし、`momorph init` を実行して `.claude`、`.vscode` ディレクトリ（プロンプト格納）を生成し、MoMorph MCP Server に接続する必要があります。
-- **`sample`** — いくつかの画面のサンプルスペックが含まれた `.claude`、`.vscode`、`.momorph` ディレクトリが事前に用意されています。MoMorph が生成する入力コンテキストや出力結果の参考として使用してください。
+- [**`main`**](https://github.com/sun-asterisk-internal/agentic-coding-hands-on/tree/main) — 初期ソースコード。受講者はこのリポジトリをクローンしてこのブランチで作業します。MoMorph CLI をインストールし、`momorph init` を実行して `.claude`、`.vscode` ディレクトリ（プロンプト格納）を生成し、MoMorph MCP Server に接続する必要があります。
+- [**`sample`**](https://github.com/sun-asterisk-internal/agentic-coding-hands-on/tree/sample) — いくつかの画面のサンプルスペックが含まれた `.claude`、`.vscode`、`.momorph` ディレクトリが事前に用意されています。MoMorph が生成する入力コンテキストや出力結果の参考として使用してください。
 
 ## 前提条件
 

@@ -1,13 +1,15 @@
 # Agentic Coding Hands-on
 
-Repository for the Sun\* internal **Agentic Coding** hands-on workshop. Participants will use **MoMorph + Claude Code** to generate code from Figma designs.
+[![Vietnamese](https://img.shields.io/badge/Vietnamese-green.svg)](https://github.com/sun-asterisk-internal/agentic-coding-hands-on/blob/main/README.md) [![Japanese](https://img.shields.io/badge/Japanese-yellow.svg)](https://github.com/sun-asterisk-internal/agentic-coding-hands-on/blob/main/README_ja.md) [![English](https://img.shields.io/badge/English-blue.svg)](https://github.com/sun-asterisk-internal/agentic-coding-hands-on/blob/main/README_en.md)
+
+Repository for the Sun\* internal **Agentic Coding** hands-on workshop. Participants will use **MoMorph + Claude Code** to generate code from Figma designs. Besides Claude Code, you can also use other AI coding agents such as **Copilot**, **Gemini**, **Windsurf**, etc. with similar steps and usage. In this hands-on, we assume you are using **Claude Code**.
 
 ## Branches
 
 This repository has 2 branches:
 
-- **`main`** — Initial source code. Participants clone this repository and work on this branch. You will need to install MoMorph CLI and run `momorph init` to generate the `.claude`, `.vscode` directories (containing prompts) to connect with the MoMorph MCP Server.
-- **`sample`** — Contains pre-built `.claude`, `.vscode`, `.momorph` directories with sample specs for several screens. Use this as a reference to see what the input context and MoMorph-generated output look like.
+- [**`main`**](https://github.com/sun-asterisk-internal/agentic-coding-hands-on/tree/main) — Initial source code. Participants clone this repository and work on this branch. You will need to install MoMorph CLI and run `momorph init` to generate the `.claude`, `.vscode` directories (containing prompts) to connect with the MoMorph MCP Server.
+- [**`sample`**](https://github.com/sun-asterisk-internal/agentic-coding-hands-on/tree/sample) — Contains pre-built `.claude`, `.vscode`, `.momorph` directories with sample specs for several screens. Use this as a reference to see what the input context and MoMorph-generated output look like.
 
 ## Prerequisites
 
