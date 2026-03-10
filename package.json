@@ -14,7 +14,11 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui"
+    "test:e2e:ui": "playwright test --ui",
+    "supabase:start": "node --env-file=.env.development scripts/supabase-start.mjs",
+    "supabase:stop": "supabase stop",
+    "supabase:restart": "supabase stop && yarn supabase:start",
+    "supabase:status": "supabase status"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.14.4",

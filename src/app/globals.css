@@ -4,16 +4,22 @@
 	--background: #ffffff;
 	--foreground: #171717;
 
-	/* Login design tokens — Colors */
+	/* TODO(fonts): Replace with next/font/local variables once licensed files are in public/fonts/ */
+	--font-digital-numbers: monospace;
+	--font-svn-gotham: sans-serif;
+
+	/* ─── Login design tokens — Colors ─────────────────────────────── */
 	--color-bg: rgba(0, 16, 26, 1);
 	--color-header-overlay: rgba(11, 15, 18, 0.8);
-	--color-accent: #15d5ca;
+	/* --color-accent is teal #15D5CA for focus rings (renamed from Login) */
+	--color-focus-ring: #15d5ca;
+	--color-accent: #15d5ca; /* kept for backward compat with login components */
 	--color-text-primary: rgba(255, 255, 255, 1);
 	--color-button-bg: rgba(255, 234, 158, 1);
 	--color-button-text: rgba(0, 16, 26, 1);
 	--color-divider: #2e3940;
 
-	/* Login design tokens — Spacing */
+	/* ─── Login design tokens — Spacing ────────────────────────────── */
 	--spacing-xs: 2px;
 	--spacing-sm: 8px;
 	--spacing-md: 16px;
@@ -25,12 +31,54 @@
 	--spacing-hero-gap: 120px;
 	--spacing-footer-x: 90px;
 
-	/* Login design tokens — Border Radius */
+	/* ─── Login design tokens — Border Radius ──────────────────────── */
 	--radius-sm: 4px;
 	--radius-md: 8px;
 
-	/* Login design tokens — Shadows */
+	/* ─── Login design tokens — Shadows ────────────────────────────── */
 	--shadow-button-hover: 0 4px 12px rgba(255, 234, 158, 0.4);
+
+	/* ─── Homepage design tokens — Colors ──────────────────────────── */
+	--color-primary: rgba(255, 234, 158, 1); /* #FFEA9E — yellow buttons, headings */
+	--color-badge: rgba(212, 39, 29, 1); /* #D4271D — notification dot */
+	--color-kudos-bg: #0f0f0f; /* Sun* Kudos card bg */
+	--color-btn-secondary-bg: rgba(255, 234, 158, 0.1); /* secondary CTA bg */
+	--color-btn-border: #998c5f; /* secondary button & avatar border */
+	--color-border: #2e3940; /* dividers, footer border */
+	--color-countdown-digit: rgba(255, 255, 255, 1); /* countdown digit text */
+	--color-btn-text-dark: rgba(0, 16, 26, 1); /* text on yellow buttons */
+	--color-kudos-wordmark: rgba(219, 209, 193, 1); /* #DBD1C1 — KUDOS wordmark */
+
+	/* ─── Homepage design tokens — Spacing ─────────────────────────── */
+	--page-padding-x: 144px;
+	--page-padding-y: 96px;
+	--header-padding: 12px 144px;
+	--header-gap: 238px;
+	--section-gap: 120px;
+	--countdown-gap: 40px;
+	--tile-inner-gap: 14px;
+	--award-card-gap: 24px;
+	--award-row-gap: 80px;
+	--footer-padding: 40px 90px;
+	--footer-nav-gap: 48px;
+	--kudos-content-gap: 32px;
+
+	/* ─── Homepage design tokens — Border & Radius ──────────────────── */
+	--radius-nav-btn: 4px;
+	--radius-cta: 8px;
+	--radius-countdown-digit: 8px;
+	--radius-award-img: 24px;
+	--radius-kudos-card: 16px;
+	--radius-widget: 100px;
+	--border-divider: 1px solid #2e3940;
+	--border-accent: 0.5px solid #ffea9e;
+	--border-award-img: 0.955px solid #ffea9e;
+	--border-btn-secondary: 1px solid #998c5f;
+	--border-nav-active: 1px solid #ffea9e;
+
+	/* ─── Homepage design tokens — Shadows ─────────────────────────── */
+	--shadow-glow-accent: 0 4px 4px rgba(0, 0, 0, 0.25), 0 0 6px #fae287;
+	--shadow-countdown-blur: blur(16.64px);
 }
 
 @theme inline {

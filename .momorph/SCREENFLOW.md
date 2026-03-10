@@ -12,10 +12,10 @@
 | Metric | Value |
 |--------|-------|
 | Total Frames | 14 |
-| Fully Specified | 1 (Login) |
+| Fully Specified | 2 (Login, Homepage SAA) |
 | In Progress | 0 |
-| Remaining | 13 |
-| Completion | 7% |
+| Remaining | 12 |
+| Completion | 14% |
 
 ---
 
@@ -24,7 +24,7 @@
 | Screen Name | Frame ID | Figma Link | Status | Spec File | Predicted APIs | Navigations |
 |-------------|----------|------------|--------|-----------|----------------|-------------|
 | Login | `662:14387` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/662:14387) | ✅ spec | `specs/662-14387-Login/` | `supabase.auth.signInWithOAuth` | → Homepage, → Dropdown-ngôn ngữ |
-| Homepage SAA | `2167:9026` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/2167:9026) | pending | - | `GET /posts`, `GET /awards` | ← Login, → Viết Kudo, → Live board |
+| Homepage SAA | `2167:9026` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/2167:9026) | ✅ spec | `specs/2167-9026-Homepage-SAA/` | `GET /awards`, `GET /notifications` | ← Login, → Awards Info, → Sun* Kudos, → Viết Kudo, → Live board |
 | Countdown - Prelaunch page | `2268:35127` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/2268:35127) | pending | - | `GET /countdown` | → Login |
 | Viết Kudo | `520:11602` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/520:11602) | pending | - | `POST /kudos` | ← Homepage, → Addlink Box |
 | Sun* Kudos - Live board | `2940:13431` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/2940:13431) | pending | - | `GET /kudos/live` | ← Homepage |
@@ -49,9 +49,9 @@ flowchart TD
 
     %% Auth
     Login["Login\n(662:14387)\n✅ spec"]
+    Homepage["Homepage SAA\n(2167:9026)\n✅ spec"]
 
     %% Main
-    Homepage["Homepage SAA\n(2167:9026)"]
 
     %% Features
     VietKudo["Viết Kudo\n(520:11602)"]
@@ -186,12 +186,13 @@ flowchart LR
 |------|--------|---------|
 | 2026-03-06 | Initial discovery | Extracted all 14 frames from Figma file `9ypp4enmFmdK3YAFJLIu6C` |
 | 2026-03-06 | Spec created | Login screen `662:14387` — full spec + design-style |
+| 2026-03-10 | Spec created | Homepage SAA `2167:9026` — full spec + design-style (8 user stories, 6 award cards, countdown, CTA, footer) |
 
 ---
 
 ## Next Steps
 
-- [ ] Run `/momorph.specify` for Homepage SAA (`2167:9026`)
+- [x] Run `/momorph.specify` for Homepage SAA (`2167:9026`)
 - [ ] Run `/momorph.specify` for Dropdown-ngôn ngữ (`721:4942`)
 - [ ] Run `/momorph.specify` for Viết Kudo (`520:11602`)
 - [ ] Create API spec (`.momorph/API.yml`)
