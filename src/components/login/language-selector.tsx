@@ -45,7 +45,7 @@ export function LanguageSelector({ lang, onLangChange }: LanguageSelectorProps) 
 				onClick={() => setIsOpen((prev) => !prev)}
 				className="flex items-center justify-between p-4 rounded-sm hover:bg-[rgba(255,255,255,0.08)] active:bg-[rgba(255,255,255,0.12)] focus:outline-2 focus:outline-[#15D5CA] focus:outline-offset-2 transition-colors duration-150 ease-in-out"
 			>
-				<Icon name="flag-vn" size={20} />
+				<Icon name="flag-vn" size={24} />
 				<span className="text-white text-base font-bold tracking-[0.15px] mx-1">
 					{label}
 				</span>
