@@ -16,13 +16,13 @@ describe("Icon", () => {
 		expect(svg).toHaveAttribute("height", "24");
 	});
 
-	it("renders flag-vn variant with container and image dimensions", () => {
+	it("renders flag-vn variant with 24×24 SVG", () => {
 		const { container } = render(<Icon name="flag-vn" size={24} />);
-		const wrapper = container.firstChild as HTMLElement;
-		expect(wrapper).toBeInTheDocument();
-		// Container is 24×24px, inner image is 20×15px
-		const inner = wrapper.querySelector("svg, img");
-		expect(inner).toBeInTheDocument();
+		const svg = container.querySelector("svg");
+		expect(svg).toBeInTheDocument();
+		expect(svg).toHaveAttribute("width", "24");
+		expect(svg).toHaveAttribute("height", "24");
+		expect(svg).toHaveAttribute("aria-hidden", "true");
 	});
 
 	it("renders chevron-down variant with 16×16 SVG in white", () => {
@@ -38,5 +38,41 @@ describe("Icon", () => {
 			<Icon name="google" size={24} className="custom-class" />
 		);
 		expect(container.firstChild).toHaveClass("custom-class");
+	});
+
+	it("renders notification-bell with 24×24 SVG", () => {
+		const { container } = render(<Icon name="notification-bell" size={24} />);
+		const svg = container.querySelector("svg");
+		expect(svg).toBeInTheDocument();
+		expect(svg).toHaveAttribute("width", "24");
+		expect(svg).toHaveAttribute("height", "24");
+		expect(svg).toHaveAttribute("aria-hidden", "true");
+	});
+
+	it("renders user-avatar with 24×24 SVG", () => {
+		const { container } = render(<Icon name="user-avatar" size={24} />);
+		const svg = container.querySelector("svg");
+		expect(svg).toBeInTheDocument();
+		expect(svg).toHaveAttribute("width", "24");
+		expect(svg).toHaveAttribute("height", "24");
+		expect(svg).toHaveAttribute("aria-hidden", "true");
+	});
+
+	it("renders arrow-up with 24×24 SVG", () => {
+		const { container } = render(<Icon name="arrow-up" size={24} />);
+		const svg = container.querySelector("svg");
+		expect(svg).toBeInTheDocument();
+		expect(svg).toHaveAttribute("width", "24");
+		expect(svg).toHaveAttribute("height", "24");
+		expect(svg).toHaveAttribute("aria-hidden", "true");
+	});
+
+	it("renders pen with 24×24 SVG", () => {
+		const { container } = render(<Icon name="pen" size={24} />);
+		const svg = container.querySelector("svg");
+		expect(svg).toBeInTheDocument();
+		expect(svg).toHaveAttribute("width", "24");
+		expect(svg).toHaveAttribute("height", "24");
+		expect(svg).toHaveAttribute("aria-hidden", "true");
 	});
 });
