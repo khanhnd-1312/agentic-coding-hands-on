@@ -21,7 +21,7 @@ dev-env:
 	@echo "Switched to local environment (.env -> .env.development)"
 
 supabase-local:
-	@npx supabase start
+	@set -a && . ./.env.development && set +a && npx supabase start
 
 sync-supabase-env:
 	@echo "Fetching Supabase local status..."
