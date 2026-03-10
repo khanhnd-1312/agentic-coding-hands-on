@@ -3,6 +3,34 @@
 :root {
 	--background: #ffffff;
 	--foreground: #171717;
+
+	/* Login design tokens — Colors */
+	--color-bg: rgba(0, 16, 26, 1);
+	--color-header-overlay: rgba(11, 15, 18, 0.8);
+	--color-accent: #15d5ca;
+	--color-text-primary: rgba(255, 255, 255, 1);
+	--color-button-bg: rgba(255, 234, 158, 1);
+	--color-button-text: rgba(0, 16, 26, 1);
+	--color-divider: #2e3940;
+
+	/* Login design tokens — Spacing */
+	--spacing-xs: 2px;
+	--spacing-sm: 8px;
+	--spacing-md: 16px;
+	--spacing-lg: 24px;
+	--spacing-xl: 40px;
+	--spacing-2xl: 64px;
+	--spacing-3xl: 96px;
+	--spacing-header-x: 144px;
+	--spacing-hero-gap: 120px;
+	--spacing-footer-x: 90px;
+
+	/* Login design tokens — Border Radius */
+	--radius-sm: 4px;
+	--radius-md: 8px;
+
+	/* Login design tokens — Shadows */
+	--shadow-button-hover: 0 4px 12px rgba(255, 234, 158, 0.4);
 }
 
 @theme inline {
