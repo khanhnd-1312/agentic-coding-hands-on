@@ -1,12 +1,22 @@
 @import "tailwindcss";
 
+@font-face {
+	font-family: "Digital Numbers";
+	src: url("/fonts/digital-numbers.woff2") format("woff2");
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "SVN Gotham";
+	src: url("/fonts/svn-gotham.woff2") format("woff2");
+	font-display: swap;
+}
+
 :root {
+	--font-digital-numbers: "Digital Numbers", monospace;
+	--font-svn-gotham: "SVN Gotham", sans-serif;
 	--background: #ffffff;
 	--foreground: #171717;
-
-	/* TODO(fonts): Replace with next/font/local variables once licensed files are in public/fonts/ */
-	--font-digital-numbers: monospace;
-	--font-svn-gotham: sans-serif;
 
 	/* ─── Login design tokens — Colors ─────────────────────────────── */
 	--color-bg: rgba(0, 16, 26, 1);
@@ -79,6 +89,17 @@
 	/* ─── Homepage design tokens — Shadows ─────────────────────────── */
 	--shadow-glow-accent: 0 4px 4px rgba(0, 0, 0, 0.25), 0 0 6px #fae287;
 	--shadow-countdown-blur: blur(16.64px);
+
+	/* ─── Countdown Prelaunch design tokens ─────────────────────── */
+	--prelaunch-bg: #00101a;
+	--prelaunch-digit-w: 77px;
+	--prelaunch-digit-h: 123px;
+	--prelaunch-digit-radius: 12px;
+	--prelaunch-digit-border: 0.75px solid #ffea9e;
+	--prelaunch-digit-font-size: 73.73px;
+	--prelaunch-digit-gap: 21px;
+	--prelaunch-unit-gap: 60px;
+	--prelaunch-heading-gap: 24px;
 }
 
 @theme inline {

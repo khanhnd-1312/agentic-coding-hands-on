@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 
 export const DEFAULT_EVENT_DATE = "2025-11-15T18:30:00+07:00";
 
-interface TimeLeft {
+export interface TimeLeft {
 	days: string;
 	hours: string;
 	minutes: string;

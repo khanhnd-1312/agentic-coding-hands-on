@@ -3,7 +3,7 @@
 **Project**: Agentic Coding Hands-on (SAA 2025)
 **Figma File Key**: `9ypp4enmFmdK3YAFJLIu6C`
 **Figma URL**: https://www.figma.com/design/9ypp4enmFmdK3YAFJLIu6C/SAA-2025---Internal-Live-Coding
-**Last Updated**: 2026-03-06
+**Last Updated**: 2026-03-11
 
 ---
 
@@ -12,10 +12,10 @@
 | Metric | Value |
 |--------|-------|
 | Total Frames | 14 |
-| Fully Specified | 2 (Login, Homepage SAA) |
+| Fully Specified | 5 (Login, Homepage SAA, Hệ thống giải, Countdown - Prelaunch, Dropdown-ngôn ngữ) |
 | In Progress | 0 |
-| Remaining | 12 |
-| Completion | 14% |
+| Remaining | 9 |
+| Completion | 36% |
 
 ---
 
@@ -25,13 +25,13 @@
 |-------------|----------|------------|--------|-----------|----------------|-------------|
 | Login | `662:14387` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/662:14387) | ✅ spec | `specs/662-14387-Login/` | `supabase.auth.signInWithOAuth` | → Homepage, → Dropdown-ngôn ngữ |
 | Homepage SAA | `2167:9026` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/2167:9026) | ✅ spec | `specs/2167-9026-Homepage-SAA/` | `GET /awards`, `GET /notifications` | ← Login, → Awards Info, → Sun* Kudos, → Viết Kudo, → Live board |
-| Countdown - Prelaunch page | `2268:35127` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/2268:35127) | pending | - | `GET /countdown` | → Login |
+| Countdown - Prelaunch page | `2268:35127` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/2268:35127) | ✅ spec | `specs/2268-35127-Countdown-Prelaunch-page/` | `GET /countdown` | → Login |
 | Viết Kudo | `520:11602` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/520:11602) | pending | - | `POST /kudos` | ← Homepage, → Addlink Box |
 | Sun* Kudos - Live board | `2940:13431` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/2940:13431) | pending | - | `GET /kudos/live` | ← Homepage |
-| Hệ thống giải | `313:8436` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/313:8436) | pending | - | `GET /awards/system` | ← Homepage |
+| Hệ thống giải | `313:8436` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/313:8436) | ✅ spec | `specs/313-8436-He-thong-giai/` | `GET /awards` | ← Homepage, → Sun* Kudos |
 | Open secret box- chưa mở | `1466:7676` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/1466:7676) | pending | - | `POST /secretbox/open` | ← Homepage |
 | Addlink Box | `1002:12917` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/1002:12917) | pending | - | `POST /links` | ← Viết Kudo |
-| Dropdown-ngôn ngữ | `721:4942` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/721:4942) | pending | - | none (client-side) | ← Login header, ← Homepage header |
+| Dropdown-ngôn ngữ | `721:4942` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/721:4942) | ✅ spec | `specs/721-4942-Dropdown-ngon-ngu/` | none (client-side) | ← Login header, ← Homepage header |
 | Dropdown-profile | `721:5223` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/721:5223) | pending | - | `supabase.auth.signOut` | ← Homepage |
 | Dropdown-profile Admin | `721:5277` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/721:5277) | pending | - | `supabase.auth.signOut` | ← Homepage (admin) |
 | Dropdown Phòng ban | `721:5684` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/721:5684) | pending | - | `GET /departments` | ← Viết Kudo |
@@ -56,12 +56,12 @@ flowchart TD
     %% Features
     VietKudo["Viết Kudo\n(520:11602)"]
     LiveBoard["Sun* Kudos - Live board\n(2940:13431)"]
-    HeThoGiai["Hệ thống giải\n(313:8436)"]
+    HeThoGiai["Hệ thống giải\n(313:8436)\n✅ spec"]
     SecretBox["Open secret box\n(1466:7676)"]
     AddlinkBox["Addlink Box\n(1002:12917)"]
 
     %% Dropdowns / overlays
-    LangDD["Dropdown-ngôn ngữ\n(721:4942)"]
+    LangDD["Dropdown-ngôn ngữ\n(721:4942)\n✅ spec"]
     ProfileDD["Dropdown-profile\n(721:5223)"]
     ProfileAdminDD["Dropdown-profile Admin\n(721:5277)"]
     PhongBanDD["Dropdown Phòng ban\n(721:5684)"]
@@ -80,6 +80,7 @@ flowchart TD
     Homepage -->|"View award system"| HeThoGiai
     Homepage -->|"Open secret box"| SecretBox
     Homepage -->|"Filter hashtag"| HashtagFilter
+    HeThoGiai -->|"Chi tiết Sun* Kudos"| LiveBoard
     VietKudo -->|"Add link"| AddlinkBox
     VietKudo -->|"Select department"| PhongBanDD
     VietKudo -->|"Select hashtag"| HashtagList
@@ -187,13 +188,17 @@ flowchart LR
 | 2026-03-06 | Initial discovery | Extracted all 14 frames from Figma file `9ypp4enmFmdK3YAFJLIu6C` |
 | 2026-03-06 | Spec created | Login screen `662:14387` — full spec + design-style |
 | 2026-03-10 | Spec created | Homepage SAA `2167:9026` — full spec + design-style (8 user stories, 6 award cards, countdown, CTA, footer) |
+| 2026-03-11 | Spec created | Hệ thống giải `313:8436` — hero banner (Keyvisual), section title, left nav menu (6 award categories), award info cards (Top Talent, Top Project, Top Project Leader, Best Manager, Signature 2025 - Creator, MVP), Sun* Kudos section with "Chi tiết" CTA |
+| 2026-03-12 | Spec created | Countdown - Prelaunch page `2268:35127` — full-screen countdown timer with glassmorphism digit cards (Days/Hours/Minutes), dark artistic background with gradient overlay, auto-redirect on zero |
+| 2026-03-13 | Spec created | Dropdown-ngôn ngữ `721:4942` — language selector dropdown (VN/EN) with flag icons, selected state highlight, client-side i18n, shared header overlay component |
 
 ---
 
 ## Next Steps
 
 - [x] Run `/momorph.specify` for Homepage SAA (`2167:9026`)
-- [ ] Run `/momorph.specify` for Dropdown-ngôn ngữ (`721:4942`)
+- [x] Run `/momorph.specify` for Hệ thống giải (`313:8436`)
+- [x] Run `/momorph.specify` for Dropdown-ngôn ngữ (`721:4942`)
 - [ ] Run `/momorph.specify` for Viết Kudo (`520:11602`)
 - [ ] Create API spec (`.momorph/API.yml`)
 - [ ] Design database schema (`.momorph/database.sql`)

@@ -29,10 +29,6 @@ const montserratAlternates = Montserrat_Alternates({
 	subsets: ["latin", "vietnamese"],
 });
 
-// TODO(fonts): Add `next/font/local` declarations for Digital Numbers and SVN-Gotham
-// once licensed font files are available in public/fonts/. Until then, CSS fallbacks
-// are declared in globals.css via --font-digital-numbers and --font-svn-gotham variables.
-
 export const metadata: Metadata = {
 	title: "Sun Annual Awards 2025",
 	description: "Sun* Annual Awards 2025 — Celebrating outstanding contributions",
