@@ -22,6 +22,13 @@ export const AwardCategorySchema = z.object({
 	description: z.string(),
 	// Accept absolute URLs or root-relative paths (e.g. /images/...)
 	thumbnailUrl: z.string().min(1),
+	quantity: z.number().optional(),
+	unit: z.string().optional(),
+	prize: z.string().optional(),
+	prizeLabel: z.string().optional(),
+	secondPrize: z.string().optional(),
+	secondPrizeLabel: z.string().optional(),
+	detailImageUrl: z.string().optional(),
 });
 
 export type AwardCategory = z.infer<typeof AwardCategorySchema>;
