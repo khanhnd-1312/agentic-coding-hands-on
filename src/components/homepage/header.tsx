@@ -6,22 +6,27 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LanguageSelector } from "@/components/login/language-selector";
 import { Icon } from "@/components/ui/icon";
+import { homepageDictionary } from "@/i18n/homepage";
 import type { LanguagePreference } from "@/types/login";
 
 interface HeaderProps {
-	initialLang?: LanguagePreference;
+	lang?: LanguagePreference;
+	onLangChange?: (lang: LanguagePreference) => void;
 }
 
-const NAV_LINKS = [
-	{ label: "About SAA 2025", href: "/" },
-	{ label: "Awards Information", href: "/awards-information" },
-	{ label: "Sun* Kudos", href: "/kudo/live" },
-];
+const NAV_HREFS = ["/", "/awards", "/kudo/live"];
 
-export function Header({ initialLang = "vi" }: HeaderProps) {
+export function Header({ lang = "vi", onLangChange }: HeaderProps) {
 	const pathname = usePathname();
-	const [lang, setLang] = useState<LanguagePreference>(initialLang);
+	const handleLangChange = onLangChange ?? (() => {});
 	const [notificationCount, setNotificationCount] = useState(0);
+	const t = homepageDictionary[lang].nav;
+
+	const navLinks = [
+		{ label: t.aboutSaa, href: NAV_HREFS[0] },
+		{ label: t.awardsInfo, href: NAV_HREFS[1] },
+		{ label: t.sunKudos, href: NAV_HREFS[2] },
+	];
 
 	useEffect(() => {
 		fetch("/api/notifications")
@@ -57,7 +62,7 @@ export function Header({ initialLang = "vi" }: HeaderProps) {
 
 				{/* Nav links (gap 24px per Figma node I2167:9091;178:653) */}
 				<nav aria-label="Main navigation" className="flex items-center gap-6">
-					{NAV_LINKS.map(({ label, href }) => {
+					{navLinks.map(({ label, href }) => {
 						const isActive = pathname === href;
 						return (
 							<Link
@@ -68,8 +73,6 @@ export function Header({ initialLang = "vi" }: HeaderProps) {
 									"p-4 whitespace-nowrap",
 									"transition-[color,background-color] duration-150 ease-in-out",
 									"focus:outline-2 focus:outline-[#15D5CA] focus:outline-offset-2",
-									// Active: yellow text + straight bottom underline (no border-radius per Figma)
-									// Hover: rounded-[4px] background highlight per Figma
 									isActive
 										? "text-[#FFEA9E] border-b border-[#FFEA9E]"
 										: "text-white hover:text-[#FFEA9E] rounded-[4px]",
@@ -87,7 +90,7 @@ export function Header({ initialLang = "vi" }: HeaderProps) {
 				{/* Notification button */}
 				<button
 					type="button"
-					aria-label="Thông báo"
+					aria-label={t.notifications}
 					className={[
 						"relative w-10 h-10 flex items-center justify-center",
 						"rounded-sm",
@@ -101,18 +104,18 @@ export function Header({ initialLang = "vi" }: HeaderProps) {
 						<span
 							data-testid="notification-badge"
 							className="absolute top-1 right-1 w-2 h-2 bg-[#D4271D] rounded-full"
-							aria-label={`${notificationCount} thông báo`}
+							aria-label={`${notificationCount} ${t.notifications}`}
 						/>
 					)}
 				</button>
 
 				{/* Language selector */}
-				<LanguageSelector lang={lang} onLangChange={setLang} />
+				<LanguageSelector lang={lang} onLangChange={handleLangChange} />
 
 				{/* Avatar button */}
 				<button
 					type="button"
-					aria-label="Tài khoản"
+					aria-label={t.account}
 					className={[
 						"w-10 h-10 rounded",
 						"border border-[#998C5F]",

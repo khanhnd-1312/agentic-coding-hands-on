@@ -21,10 +21,10 @@ import { vi } from "vitest";
 import { CTAButtons } from "./cta-buttons";
 
 describe("CTAButtons", () => {
-	it("'ABOUT AWARDS' button navigates to /awards-information", () => {
+	it("'ABOUT AWARDS' button navigates to /awards", () => {
 		render(<CTAButtons />);
 		const awardsLink = screen.getByRole("link", { name: /about awards/i });
-		expect(awardsLink).toHaveAttribute("href", "/awards-information");
+		expect(awardsLink).toHaveAttribute("href", "/awards");
 	});
 
 	it("'ABOUT KUDOS' button navigates to /kudo/live", () => {

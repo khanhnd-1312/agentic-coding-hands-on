@@ -1,14 +1,23 @@
 import Image from "next/image";
 import Link from "next/link";
+import { homepageDictionary } from "@/i18n/homepage";
+import type { LanguagePreference } from "@/types/login";
 
-const NAV_LINKS = [
-	{ label: "About SAA 2025", href: "/" },
-	{ label: "Awards Information", href: "/awards-information" },
-	{ label: "Sun* Kudos", href: "/kudo/live" },
-	{ label: "Tiêu chuẩn chung", href: "/tieu-chuan-chung" },
-];
+interface FooterProps {
+	lang?: LanguagePreference;
+}
 
-export function Footer() {
+const NAV_HREFS = ["/", "/awards", "/kudo/live", "/tieu-chuan-chung"];
+
+export function Footer({ lang = "vi" }: FooterProps) {
+	const t = homepageDictionary[lang].footer;
+	const navLinks = [
+		{ label: t.aboutSaa, href: NAV_HREFS[0] },
+		{ label: t.awardsInfo, href: NAV_HREFS[1] },
+		{ label: t.sunKudos, href: NAV_HREFS[2] },
+		{ label: t.standards, href: NAV_HREFS[3] },
+	];
+
 	return (
 		<footer
 			className={[
@@ -33,7 +42,7 @@ export function Footer() {
 				aria-label="Footer navigation"
 				className="flex flex-row items-center gap-12 flex-wrap"
 			>
-				{NAV_LINKS.map(({ label, href }) => (
+				{navLinks.map(({ label, href }) => (
 					<Link
 						key={href}
 						href={href}
@@ -57,7 +66,7 @@ export function Footer() {
 					"text-white text-base font-bold leading-6",
 				].join(" ")}
 			>
-				Bản quyền thuộc về Sun* © 2025
+				{t.copyright}
 			</span>
 		</footer>
 	);

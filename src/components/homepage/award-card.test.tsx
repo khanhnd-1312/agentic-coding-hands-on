@@ -53,15 +53,15 @@ describe("AwardCard", () => {
 
 	it("renders description with line-clamp-2 class", () => {
 		render(<AwardCard award={mockAward} />);
-		const desc = screen.getByText(mockAward.description);
+		const desc = screen.getByText(/vinh danh những cá nhân xuất sắc toàn diện/i);
 		expect(desc).toBeInTheDocument();
 		expect(desc.className).toMatch(/line-clamp-2/);
 	});
 
-	it("'Chi tiết' link href is /awards-information#top-talent", () => {
+	it("'Chi tiết' link href is /awards#top-talent", () => {
 		render(<AwardCard award={mockAward} />);
 		const link = screen.getByRole("link", { name: /chi tiết/i });
-		expect(link).toHaveAttribute("href", "/awards-information#top-talent");
+		expect(link).toHaveAttribute("href", "/awards#top-talent");
 	});
 
 	it("award image has mix-blend-screen class", () => {

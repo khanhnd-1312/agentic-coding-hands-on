@@ -52,10 +52,10 @@ describe("Header", () => {
 		expect(link.className).toMatch(/FFEA9E|text-\[#FFEA9E\]/);
 	});
 
-	it("'Awards Information' link renders with href='/awards-information'", () => {
+	it("'Awards Information' link renders with href='/awards'", () => {
 		render(<Header />);
 		const link = screen.getByRole("link", { name: /awards information/i });
-		expect(link).toHaveAttribute("href", "/awards-information");
+		expect(link).toHaveAttribute("href", "/awards");
 	});
 
 	it("'Sun* Kudos' link renders with href='/kudo/live'", () => {

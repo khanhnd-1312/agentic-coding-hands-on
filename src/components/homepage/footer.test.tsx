@@ -43,10 +43,10 @@ describe("Footer", () => {
 		expect(link).toHaveAttribute("href", "/");
 	});
 
-	it("renders 'Awards Information' link with href='/awards-information'", () => {
+	it("renders 'Awards Information' link with href='/awards'", () => {
 		render(<Footer />);
 		const link = screen.getByRole("link", { name: /awards information/i });
-		expect(link).toHaveAttribute("href", "/awards-information");
+		expect(link).toHaveAttribute("href", "/awards");
 	});
 
 	it("renders 'Sun* Kudos' link with href='/kudo/live'", () => {

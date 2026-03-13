@@ -14,7 +14,7 @@ export function CTAButtons({ lang = "vi" }: CTAButtonsProps) {
 		<div className="flex flex-row gap-[40px] flex-wrap max-sm:flex-col max-sm:gap-4">
 			{/* Primary: ABOUT AWARDS */}
 			<Link
-				href="/awards-information"
+				href="/awards"
 				aria-label={t.aboutAwards}
 				className={[
 					"flex items-center justify-center gap-2",

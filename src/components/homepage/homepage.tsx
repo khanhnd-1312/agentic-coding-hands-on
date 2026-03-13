@@ -1,4 +1,6 @@
-import { Suspense } from "react";
+"use client";
+
+import { Suspense, useState } from "react";
 import { Header } from "./header";
 import { HeroSection } from "./hero-section";
 import { AwardsSection } from "./awards-section";
@@ -11,10 +13,12 @@ import type { LanguagePreference } from "@/types/login";
 
 interface HomePageProps {
 	awards?: AwardCategory[];
-	lang?: LanguagePreference;
+	initialLang?: LanguagePreference;
 }
 
-export function HomePage({ awards = [], lang = "vi" }: HomePageProps) {
+export function HomePage({ awards = [], initialLang = "vi" }: HomePageProps) {
+	const [lang, setLang] = useState<LanguagePreference>(initialLang);
+
 	return (
 		<>
 			{/* Skip navigation */}
@@ -25,7 +29,7 @@ export function HomePage({ awards = [], lang = "vi" }: HomePageProps) {
 				Skip to main content
 			</a>
 
-			<Header initialLang={lang} />
+			<Header lang={lang} onLangChange={setLang} />
 
 			<main id="main-content" className="pt-20">
 				<HeroSection lang={lang} />
@@ -44,7 +48,7 @@ export function HomePage({ awards = [], lang = "vi" }: HomePageProps) {
 				</div>
 			</main>
 
-			<Footer />
+			<Footer lang={lang} />
 
 			<WidgetButton />
 		</>

@@ -1,15 +1,19 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
+import { translateAward } from "@/i18n/awards";
+import { homepageDictionary } from "@/i18n/homepage";
 import type { AwardCategory } from "@/types/homepage";
+import type { LanguagePreference } from "@/types/login";
 
 interface AwardCardProps {
 	award: AwardCategory;
-	lang?: "vi" | "en";
+	lang?: LanguagePreference;
 }
 
-export function AwardCard({ award, lang = "vi" }: AwardCardProps) {
-	const detailLabel = lang === "en" ? "Details" : "Chi tiết";
+export function AwardCard({ award: rawAward, lang = "vi" }: AwardCardProps) {
+	const award = translateAward(rawAward, lang);
+	const detailLabel = homepageDictionary[lang].awards.cardDetail;
 
 	return (
 		<div
@@ -62,7 +66,7 @@ export function AwardCard({ award, lang = "vi" }: AwardCardProps) {
 					{award.description}
 				</p>
 				<Link
-					href={`/awards-information#${award.slug}`}
+					href={`/awards#${award.slug}`}
 					aria-label={`${detailLabel} — ${award.name}`}
 					className={[
 						"inline-flex items-center gap-2",
