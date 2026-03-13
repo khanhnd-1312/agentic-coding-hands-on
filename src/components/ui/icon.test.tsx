@@ -75,4 +75,49 @@ describe("Icon", () => {
 		expect(svg).toHaveAttribute("height", "24");
 		expect(svg).toHaveAttribute("aria-hidden", "true");
 	});
+
+	it("renders target with 24×24 SVG", () => {
+		const { container } = render(<Icon name="target" size={24} />);
+		const svg = container.querySelector("svg");
+		expect(svg).toBeInTheDocument();
+		expect(svg).toHaveAttribute("width", "24");
+		expect(svg).toHaveAttribute("height", "24");
+		expect(svg).toHaveAttribute("aria-hidden", "true");
+	});
+
+	it("renders diamond with 24×24 SVG", () => {
+		const { container } = render(<Icon name="diamond" size={24} />);
+		const svg = container.querySelector("svg");
+		expect(svg).toBeInTheDocument();
+		expect(svg).toHaveAttribute("width", "24");
+		expect(svg).toHaveAttribute("height", "24");
+		expect(svg).toHaveAttribute("aria-hidden", "true");
+	});
+
+	it("renders license with 24×24 SVG", () => {
+		const { container } = render(<Icon name="license" size={24} />);
+		const svg = container.querySelector("svg");
+		expect(svg).toBeInTheDocument();
+		expect(svg).toHaveAttribute("width", "24");
+		expect(svg).toHaveAttribute("height", "24");
+		expect(svg).toHaveAttribute("aria-hidden", "true");
+	});
+
+	it("renders ic-arrow with 24×24 SVG", () => {
+		const { container } = render(<Icon name="ic-arrow" size={24} />);
+		const svg = container.querySelector("svg");
+		expect(svg).toBeInTheDocument();
+		expect(svg).toHaveAttribute("width", "24");
+		expect(svg).toHaveAttribute("height", "24");
+		expect(svg).toHaveAttribute("aria-hidden", "true");
+	});
+
+	it("renders flag-en with 24×24 SVG and aria-hidden", () => {
+		const { container } = render(<Icon name="flag-en" size={24} />);
+		const svg = container.querySelector("svg");
+		expect(svg).toBeInTheDocument();
+		expect(svg).toHaveAttribute("width", "24");
+		expect(svg).toHaveAttribute("height", "24");
+		expect(svg).toHaveAttribute("aria-hidden", "true");
+	});
 });
