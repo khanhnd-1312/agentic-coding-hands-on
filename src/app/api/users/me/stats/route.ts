@@ -1,68 +1,32 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/libs/supabase/server";
+import { getApiAuth } from "@/libs/supabase/api-auth";
 
 export async function GET() {
-	const supabase = await createClient();
+	const auth = await getApiAuth();
+	if (auth instanceof NextResponse) return auth;
+	const { supabase, userId } = auth;
 
-	const {
-		data: { user },
-	} = await supabase.auth.getUser();
-
-	if (!user) {
-		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-	}
+	const uid = userId ?? "";
 
 	try {
-		// Kudos received count
-		const { data: receivedData, error: receivedError } = await supabase
-			.from("kudos")
-			.select("count", { count: "exact", head: true })
-			.eq("receiver_id", user.id);
-
-		if (receivedError) throw receivedError;
-
-		// Kudos sent count
-		const { data: sentData, error: sentError } = await supabase
-			.from("kudos")
-			.select("count", { count: "exact", head: true })
-			.eq("sender_id", user.id);
-
-		if (sentError) throw sentError;
-
-		// Hearts received: count hearts on kudos where user is sender
-		const { data: heartsData, error: heartsError } = await supabase
-			.from("kudos_hearts")
-			.select("count", { count: "exact", head: true })
-			.eq("user_id", user.id);
-
-		if (heartsError) throw heartsError;
-
-		// Secret boxes opened
-		const { data: openedData, error: openedError } = await supabase
-			.from("secret_boxes")
-			.select("count", { count: "exact", head: true })
-			.eq("user_id", user.id)
-			.eq("is_opened", true);
-
-		if (openedError) throw openedError;
-
-		// Secret boxes unopened
-		const { data: unopenedData, error: unopenedError } = await supabase
-			.from("secret_boxes")
-			.select("count", { count: "exact", head: true })
-			.eq("user_id", user.id)
-			.eq("is_opened", false);
-
-		if (unopenedError) throw unopenedError;
+		// Run all count queries in parallel
+		const [received, sent, hearts, opened, unopened] = await Promise.all([
+			supabase.from("kudos").select("id").eq("receiver_id", uid),
+			supabase.from("kudos").select("id").eq("sender_id", uid),
+			supabase.from("kudos_hearts").select("id").eq("user_id", uid),
+			supabase.from("secret_boxes").select("id").eq("user_id", uid).eq("is_opened", true),
+			supabase.from("secret_boxes").select("id").eq("user_id", uid).eq("is_opened", false),
+		]);
 
 		return NextResponse.json({
-			kudos_received: Number(receivedData) || 0,
-			kudos_sent: Number(sentData) || 0,
-			hearts_received: Number(heartsData) || 0,
-			secret_boxes_opened: Number(openedData) || 0,
-			secret_boxes_unopened: Number(unopenedData) || 0,
+			kudos_received: received.data?.length ?? 0,
+			kudos_sent: sent.data?.length ?? 0,
+			hearts_received: hearts.data?.length ?? 0,
+			secret_boxes_opened: opened.data?.length ?? 0,
+			secret_boxes_unopened: unopened.data?.length ?? 0,
 		});
-	} catch {
+	} catch (err) {
+		console.error("[API /api/users/me/stats] Error:", err);
 		return NextResponse.json(
 			{ error: "Failed to fetch user stats" },
 			{ status: 500 },

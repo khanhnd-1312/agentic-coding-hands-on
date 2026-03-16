@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/libs/supabase/server";
+import { getApiAuth } from "@/libs/supabase/api-auth";
 import { KudosHighlightsQuerySchema } from "@/types/kudos";
 
 export async function GET(request: NextRequest) {
@@ -17,15 +17,9 @@ export async function GET(request: NextRequest) {
 		);
 	}
 
-	const supabase = await createClient();
-
-	const {
-		data: { user },
-	} = await supabase.auth.getUser();
-
-	if (!user) {
-		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-	}
+	const auth = await getApiAuth();
+	if (auth instanceof NextResponse) return auth;
+	const { supabase, userId } = auth;
 
 	// Fetch top 5 kudos by heart_count
 	let query = supabase
@@ -98,7 +92,7 @@ export async function GET(request: NextRequest) {
 				.filter(Boolean);
 
 			const hearts = k.kudos_hearts as Array<{ user_id: string }>;
-			const isLikedByMe = hearts.some((h) => h.user_id === user.id);
+			const isLikedByMe = hearts.some((h) => h.user_id === (userId ?? ""));
 
 			return {
 				id: k.id as string,

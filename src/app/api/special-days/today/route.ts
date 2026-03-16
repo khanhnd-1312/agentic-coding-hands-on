@@ -1,17 +1,11 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/libs/supabase/server";
+import { getApiAuth } from "@/libs/supabase/api-auth";
 import type { SpecialDayTodayResponse } from "@/types/kudos";
 
 export async function GET() {
-	const supabase = await createClient();
-
-	const {
-		data: { user },
-	} = await supabase.auth.getUser();
-
-	if (!user) {
-		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-	}
+	const auth = await getApiAuth();
+	if (auth instanceof NextResponse) return auth;
+	const { supabase } = auth;
 
 	const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
 

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/libs/supabase/server";
+import { getApiAuth } from "@/libs/supabase/api-auth";
 import { KudosIdParamSchema } from "@/types/kudos";
 
 interface RouteContext {
@@ -18,15 +18,9 @@ export async function POST(_request: NextRequest, context: RouteContext) {
 	}
 
 	const { id: kudosId } = parsed.data;
-	const supabase = await createClient();
-
-	const {
-		data: { user },
-	} = await supabase.auth.getUser();
-
-	if (!user) {
-		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-	}
+	const auth = await getApiAuth();
+	if (auth instanceof NextResponse) return auth;
+	const { supabase, userId } = auth;
 
 	// Fetch the kudos to verify it exists and check sender
 	const { data: kudos, error: kudosError } = await supabase
@@ -40,7 +34,7 @@ export async function POST(_request: NextRequest, context: RouteContext) {
 	}
 
 	// BR-002: Sender cannot like own kudos
-	if (kudos.sender_id === user.id) {
+	if (kudos.sender_id === (userId ?? "")) {
 		return NextResponse.json(
 			{ error: "Cannot like your own kudos" },
 			{ status: 403 },
@@ -60,7 +54,7 @@ export async function POST(_request: NextRequest, context: RouteContext) {
 
 	// Insert heart record (unique constraint will prevent duplicates)
 	const { error: heartError } = await supabase.from("kudos_hearts").insert({
-		user_id: user.id,
+		user_id: userId ?? "",
 		kudos_id: kudosId,
 		is_special_day: isSpecialDay,
 	});
@@ -110,21 +104,15 @@ export async function DELETE(_request: NextRequest, context: RouteContext) {
 	}
 
 	const { id: kudosId } = parsed.data;
-	const supabase = await createClient();
-
-	const {
-		data: { user },
-	} = await supabase.auth.getUser();
-
-	if (!user) {
-		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-	}
+	const auth = await getApiAuth();
+	if (auth instanceof NextResponse) return auth;
+	const { supabase, userId } = auth;
 
 	// Fetch the heart record to get is_special_day flag for accurate tim revocation
 	const { data: heart, error: heartFetchError } = await supabase
 		.from("kudos_hearts")
 		.select("id, is_special_day, kudos_id")
-		.eq("user_id", user.id)
+		.eq("user_id", userId ?? "")
 		.eq("kudos_id", kudosId)
 		.single();
 

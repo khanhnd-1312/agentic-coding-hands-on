@@ -1,22 +1,16 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/libs/supabase/server";
+import { getApiAuth } from "@/libs/supabase/api-auth";
 
 export async function POST() {
-	const supabase = await createClient();
-
-	const {
-		data: { user },
-	} = await supabase.auth.getUser();
-
-	if (!user) {
-		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-	}
+	const auth = await getApiAuth();
+	if (auth instanceof NextResponse) return auth;
+	const { supabase, userId } = auth;
 
 	// Find an unopened secret box
 	const { data: box, error: findError } = await supabase
 		.from("secret_boxes")
 		.select("id, reward_content")
-		.eq("user_id", user.id)
+		.eq("user_id", userId ?? "")
 		.eq("is_opened", false)
 		.limit(1)
 		.single();

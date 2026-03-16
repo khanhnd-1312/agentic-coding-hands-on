@@ -5,11 +5,22 @@ import { Header } from "@/components/homepage/header";
 import { Footer } from "@/components/homepage/footer";
 import { KudosLiveBoardClient } from "@/components/kudos-live-board/kudos-live-board-client";
 import type { LanguagePreference } from "@/types/login";
+import type { Kudos, SpotlightResponse, UserStats, TopGiftSunner } from "@/types/kudos";
 
 export const metadata = {
 	title: "Sun* Kudos - Live Board | Sun Annual Awards 2025",
 	description: "Browse, send, and interact with kudos on the Sun* Live Board",
 };
+
+async function fetchApi<T>(baseUrl: string, path: string): Promise<T | null> {
+	try {
+		const res = await fetch(`${baseUrl}${path}`, { cache: "no-store" });
+		if (!res.ok) return null;
+		return (await res.json()) as T;
+	} catch {
+		return null;
+	}
+}
 
 export default async function KudoLivePage() {
 	const cookieStore = await cookies();
@@ -21,133 +32,36 @@ export default async function KudoLivePage() {
 		data: { user },
 	} = await supabase.auth.getUser();
 
-	if (!user) {
+	// In production, require authentication
+	if (!user && process.env.NODE_ENV !== "development") {
 		redirect("/login");
 	}
 
-	// Fetch initial data in parallel
-	const [highlightsRes, kudosRes, spotlightRes, statsRes, topGiftsRes] =
+	const currentUserId = user?.id ?? "";
+	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+
+	// Fetch data via API routes (which handle auth and data transformation)
+	const [highlightsJson, kudosJson, spotlightJson, statsJson, topGiftsJson] =
 		await Promise.all([
-			supabase
-				.from("kudos")
-				.select(
-					"id, sender_id, receiver_id, content, images, heart_count, created_at, sender:profiles!kudos_sender_id_fkey(id, name, avatar_url, department_name, kudos_received_count), receiver:profiles!kudos_receiver_id_fkey(id, name, avatar_url, department_name, kudos_received_count), hashtags(id, name), is_liked_by_me:hearts!left(id)",
-				)
-				.order("heart_count", { ascending: false })
-				.limit(10),
-			supabase
-				.from("kudos")
-				.select(
-					"id, sender_id, receiver_id, content, images, heart_count, created_at, sender:profiles!kudos_sender_id_fkey(id, name, avatar_url, department_name, kudos_received_count), receiver:profiles!kudos_receiver_id_fkey(id, name, avatar_url, department_name, kudos_received_count), hashtags(id, name), is_liked_by_me:hearts!left(id)",
-				)
-				.order("created_at", { ascending: false })
-				.range(0, 19),
-			supabase
-				.from("kudos_receiver_counts")
-				.select(
-					"receiver_id, count, receiver:profiles!kudos_receiver_counts_receiver_id_fkey(id, name)",
-				)
-				.order("count", { ascending: false }),
-			supabase.rpc("get_user_stats", { p_user_id: user.id }),
-			supabase
-				.from("secret_boxes")
-				.select(
-					"id, reward_content, opened_at, user:profiles!secret_boxes_user_id_fkey(id, name, avatar_url)",
-				)
-				.eq("is_opened", true)
-				.order("opened_at", { ascending: false })
-				.limit(10),
+			fetchApi<{ data: Kudos[] }>(baseUrl, "/api/kudos/highlights"),
+			fetchApi<{ data: Kudos[]; has_more: boolean }>(baseUrl, "/api/kudos?page=1&limit=20"),
+			fetchApi<SpotlightResponse>(baseUrl, "/api/spotlight"),
+			fetchApi<UserStats>(baseUrl, "/api/users/me/stats"),
+			fetchApi<{ items: TopGiftSunner[] }>(baseUrl, "/api/sunners/top-gifts"),
 		]);
 
-	// Transform highlights
-	const highlights = (highlightsRes.data ?? []).map((k) => ({
-		...k,
-		sender: k.sender as unknown as {
-			id: string;
-			name: string;
-			avatar_url: string | null;
-			department_name: string | null;
-			kudos_received_count: number;
-		},
-		receiver: k.receiver as unknown as {
-			id: string;
-			name: string;
-			avatar_url: string | null;
-			department_name: string | null;
-			kudos_received_count: number;
-		},
-		hashtags: (k.hashtags ?? []) as { id: string; name: string }[],
-		is_liked_by_me: Array.isArray(k.is_liked_by_me)
-			? k.is_liked_by_me.length > 0
-			: false,
-	}));
-
-	// Transform kudos feed
-	const kudos = (kudosRes.data ?? []).map((k) => ({
-		...k,
-		sender: k.sender as unknown as {
-			id: string;
-			name: string;
-			avatar_url: string | null;
-			department_name: string | null;
-			kudos_received_count: number;
-		},
-		receiver: k.receiver as unknown as {
-			id: string;
-			name: string;
-			avatar_url: string | null;
-			department_name: string | null;
-			kudos_received_count: number;
-		},
-		hashtags: (k.hashtags ?? []) as { id: string; name: string }[],
-		is_liked_by_me: Array.isArray(k.is_liked_by_me)
-			? k.is_liked_by_me.length > 0
-			: false,
-	}));
-
-	// Transform spotlight
-	const spotlightEntries = (spotlightRes.data ?? []).map((row) => {
-		const r = row.receiver as unknown as { id: string; name: string };
-		return {
-			user_id: r?.id ?? row.receiver_id,
-			name: r?.name ?? "",
-			kudos_count: row.count as number,
-		};
-	});
-	const spotlight = {
-		total_kudos: spotlightEntries.reduce((sum, e) => sum + e.kudos_count, 0),
-		entries: spotlightEntries,
-	};
-
-	// Transform stats
-	const stats = (statsRes.data as {
-		kudos_received: number;
-		kudos_sent: number;
-		hearts_received: number;
-		secret_boxes_opened: number;
-		secret_boxes_unopened: number;
-	}) ?? {
+	const highlights = highlightsJson?.data ?? [];
+	const kudos = kudosJson?.data ?? [];
+	const hasMore = kudosJson?.has_more ?? false;
+	const spotlight = spotlightJson ?? { total_kudos: 0, entries: [] };
+	const stats: UserStats = statsJson ?? {
 		kudos_received: 0,
 		kudos_sent: 0,
 		hearts_received: 0,
 		secret_boxes_opened: 0,
 		secret_boxes_unopened: 0,
 	};
-
-	// Transform top gifts
-	const topGifts = (topGiftsRes.data ?? []).map((row) => {
-		const u = row.user as unknown as {
-			id: string;
-			name: string;
-			avatar_url: string | null;
-		};
-		return {
-			user_id: u?.id ?? "",
-			name: u?.name ?? "",
-			avatar_url: u?.avatar_url ?? null,
-			gift_description: String(row.reward_content ?? ""),
-		};
-	});
+	const topGifts = topGiftsJson?.items ?? [];
 
 	return (
 		<main className="min-h-screen bg-[var(--klb-color-bg-primary)]">
@@ -155,8 +69,8 @@ export default async function KudoLivePage() {
 			<KudosLiveBoardClient
 				initialHighlights={highlights}
 				initialKudos={kudos}
-				initialHasMore={kudos.length >= 20}
-				currentUserId={user.id}
+				initialHasMore={hasMore}
+				currentUserId={currentUserId}
 				initialStats={stats}
 				initialTopGifts={topGifts}
 				initialSpotlight={spotlight}

@@ -15,7 +15,8 @@ export async function middleware(request: NextRequest) {
 	}
 
 	// Unauthenticated user visiting a protected route → redirect to /login
-	if (!user && pathname !== "/login") {
+	// In development, allow access to all pages without authentication
+	if (!user && pathname !== "/login" && process.env.NODE_ENV !== "development") {
 		return NextResponse.redirect(new URL("/login", request.url), {
 			status: 307,
 		});
@@ -26,6 +27,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
 	matcher: [
-		"/((?!auth/callback|_next/static|_next/image|favicon.ico|images).*)",
+		"/((?!api/|auth/callback|_next/static|_next/image|favicon.ico|images).*)",
 	],
 };
