@@ -100,6 +100,32 @@
 	--prelaunch-digit-gap: 21px;
 	--prelaunch-unit-gap: 60px;
 	--prelaunch-heading-gap: 24px;
+
+	/* ─── Kudos Live Board design tokens — Colors ──────────────────── */
+	--klb-color-bg-primary: #00101a;
+	--klb-color-bg-header: rgba(16, 20, 23, 0.8);
+	--klb-color-bg-card: #fff8e1;
+	--klb-color-bg-card-alt: #fff3c6;
+	--klb-color-border-gold: #998c5f;
+	--klb-color-separator: #2e3940;
+	--klb-color-accent-gold: #ffea9e;
+	--klb-color-accent-tan: #dbd1c1;
+	--klb-color-text-white: #ffffff;
+	--klb-color-text-muted: #999999;
+	--klb-color-heart-red: #d4271d;
+	--klb-color-highlight-pink: #f17676;
+
+	/* ─── Kudos Live Board design tokens — Spacing ─────────────────── */
+	--klb-spacing-page-x: 144px;
+	--klb-spacing-section-gap: 120px;
+	--klb-spacing-section-inner: 64px;
+	--klb-spacing-card-gap: 40px;
+	--klb-spacing-sidebar-gap: 80px;
+
+	/* ─── Kudos Live Board design tokens — Border & Radius ─────────── */
+	--klb-radius-lg: 24px;
+	--klb-radius-full: 100px;
+	--klb-border-gold: 1px solid #998c5f;
 }
 
 @theme inline {
