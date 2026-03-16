@@ -413,6 +413,24 @@ export function Icon({ name, size, className }: IconProps) {
 		);
 	}
 
+	if (name === "sun-flame") {
+		return (
+			<svg
+				width={size}
+				height={size}
+				viewBox="0 0 48 48"
+				fill="none"
+				className={className}
+				aria-hidden="true"
+			>
+				<path
+					d="M24 4C24 4 28 12 28 20C28 24 32 22 34 18C34 18 38 26 34 34C30 42 18 42 14 34C10 26 14 18 14 18C16 22 20 24 20 20C20 12 24 4 24 4Z"
+					fill="currentColor"
+				/>
+			</svg>
+		);
+	}
+
 	if (name === "pen") {
 		return (
 			<svg

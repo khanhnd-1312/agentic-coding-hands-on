@@ -20,8 +20,8 @@ export function TopSunnerList({ title, items, emptyText }: TopSunnerListProps) {
 				</p>
 			) : (
 				<ul className="flex flex-col gap-3">
-					{items.map((item) => (
-						<li key={item.user_id}>
+					{items.map((item, index) => (
+						<li key={`${item.user_id}-${index}`}>
 							<TopSunnerListItem item={item} />
 						</li>
 					))}

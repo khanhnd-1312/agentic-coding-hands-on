@@ -19,7 +19,7 @@ export function SpotlightSection({
 		<section className="flex flex-col gap-10">
 			{/* Section header */}
 			<div className="px-4 xl:px-[var(--klb-spacing-page-x)]">
-				<p className="text-sm font-bold text-[var(--klb-color-text-white)] font-[family-name:var(--font-montserrat)] tracking-wider uppercase">
+				<p className="text-2xl font-bold text-[var(--klb-color-text-white)] font-[family-name:var(--font-montserrat)]">
 					{t.caption}
 				</p>
 				<h2 className="text-4xl lg:text-[57px] font-bold text-[var(--klb-color-accent-gold)] font-[family-name:var(--font-montserrat)] leading-tight mt-2">
@@ -41,19 +41,12 @@ export function SpotlightSection({
 						{t.empty}
 					</p>
 				) : (
-					<div className="flex flex-col gap-6">
-						{/* Total kudos header */}
-						<p className="text-[32px] font-bold text-[var(--klb-color-text-white)] font-[family-name:var(--font-montserrat)]">
-							{data.total_kudos} KUDOS
-						</p>
-
-						{/* Board */}
-						<SpotlightBoard
-							entries={data.entries}
-							searchPlaceholder={t.searchPlaceholder}
-							panZoomTooltip={t.panZoomTooltip}
-						/>
-					</div>
+					<SpotlightBoard
+						entries={data.entries}
+						totalKudos={data.total_kudos}
+						searchPlaceholder={t.searchPlaceholder}
+						panZoomTooltip={t.panZoomTooltip}
+					/>
 				)}
 			</div>
 		</section>

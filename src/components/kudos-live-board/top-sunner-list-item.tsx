@@ -20,6 +20,9 @@ export function TopSunnerListItem({ item }: TopSunnerListItemProps) {
 			href={`/profile/${item.user_id}`}
 			className="flex items-center gap-3 hover:opacity-80 transition-opacity duration-150"
 		>
+			{/* Red dot indicator */}
+			<span className="w-2 h-2 rounded-full bg-[var(--klb-color-heart-red)] shrink-0" />
+
 			{/* Avatar */}
 			<div className="w-10 h-10 rounded-full overflow-hidden shrink-0 bg-[var(--klb-color-border-gold)] flex items-center justify-center">
 				{item.avatar_url ? (

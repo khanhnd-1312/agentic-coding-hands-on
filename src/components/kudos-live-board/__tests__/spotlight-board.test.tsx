@@ -14,6 +14,7 @@ describe("SpotlightBoard", () => {
 		render(
 			<SpotlightBoard
 				entries={mockEntries}
+				totalKudos={110}
 				searchPlaceholder="Tìm kiếm tên..."
 				panZoomTooltip="Pan/Zoom"
 			/>,
@@ -29,6 +30,7 @@ describe("SpotlightBoard", () => {
 		render(
 			<SpotlightBoard
 				entries={mockEntries}
+				totalKudos={110}
 				searchPlaceholder="Tìm kiếm tên..."
 				panZoomTooltip="Pan/Zoom"
 			/>,
@@ -43,6 +45,7 @@ describe("SpotlightBoard", () => {
 		render(
 			<SpotlightBoard
 				entries={mockEntries}
+				totalKudos={110}
 				searchPlaceholder="Tìm kiếm tên..."
 				panZoomTooltip="Pan/Zoom"
 			/>,
@@ -56,6 +59,7 @@ describe("SpotlightBoard", () => {
 		render(
 			<SpotlightBoard
 				entries={mockEntries}
+				totalKudos={110}
 				searchPlaceholder="Tìm kiếm tên..."
 				panZoomTooltip="Pan/Zoom"
 			/>,
@@ -68,6 +72,7 @@ describe("SpotlightBoard", () => {
 		render(
 			<SpotlightBoard
 				entries={mockEntries}
+				totalKudos={110}
 				searchPlaceholder="Tìm kiếm tên..."
 				panZoomTooltip="Pan/Zoom"
 			/>,
@@ -84,6 +89,7 @@ describe("SpotlightBoard", () => {
 		render(
 			<SpotlightBoard
 				entries={mockEntries}
+				totalKudos={110}
 				searchPlaceholder="Tìm kiếm tên..."
 				panZoomTooltip="Pan/Zoom"
 			/>,

@@ -35,6 +35,10 @@ export function HighlightKudoCard({
 	const t = kudosLiveBoardDictionary[lang].highlight;
 	const isSender = currentUserId === kudos.sender_id;
 
+	// First hashtag used as category badge (D.4 in spec)
+	const categoryBadge = kudos.hashtags.length > 0 ? kudos.hashtags[0] : null;
+	const remainingHashtags = kudos.hashtags.slice(1);
+
 	return (
 		<article className="bg-[var(--klb-color-bg-card)] rounded-lg p-6 flex flex-col gap-3 min-w-0">
 			{/* Sender → Receiver */}
@@ -53,17 +57,28 @@ export function HighlightKudoCard({
 				{formatTimestamp(kudos.created_at)}
 			</time>
 
+			{/* Category badge (D.4) */}
+			{categoryBadge && (
+				<button
+					type="button"
+					onClick={() => onHashtagClick?.(categoryBadge.id)}
+					className="self-start px-3 py-1 rounded bg-[var(--klb-color-heart-red)]/10 text-[var(--klb-color-heart-red)] text-xs font-bold font-[family-name:var(--font-montserrat)] uppercase tracking-wide cursor-pointer hover:bg-[var(--klb-color-heart-red)]/20 transition-colors"
+				>
+					{categoryBadge.name.replace(/^#/, "")}
+				</button>
+			)}
+
 			{/* Content — 3-line truncation, clickable to detail */}
 			<Link href={`/kudo/${kudos.id}`} className="block">
-				<p className="text-base font-bold text-gray-900 font-[family-name:var(--font-montserrat)] leading-8 line-clamp-3">
+				<p className="text-xl font-bold text-gray-900 font-[family-name:var(--font-montserrat)] leading-8 line-clamp-3">
 					{kudos.content}
 				</p>
 			</Link>
 
 			{/* Hashtags */}
-			{kudos.hashtags.length > 0 && (
+			{remainingHashtags.length > 0 && (
 				<div className="flex gap-2 overflow-hidden max-h-6">
-					{kudos.hashtags.map((tag) => (
+					{remainingHashtags.map((tag) => (
 						<button
 							key={tag.id}
 							type="button"
