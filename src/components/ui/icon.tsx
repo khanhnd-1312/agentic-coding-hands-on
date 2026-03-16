@@ -228,6 +228,191 @@ export function Icon({ name, size, className }: IconProps) {
 		);
 	}
 
+	if (name === "heart") {
+		return (
+			<svg
+				width={size}
+				height={size}
+				viewBox="0 0 24 24"
+				fill="none"
+				className={className}
+				aria-hidden="true"
+			>
+				<path
+					d="M12.1 21.35L10.55 19.93C5.4 15.36 2 12.28 2 8.5C2 5.42 4.42 3 7.5 3C9.24 3 10.91 3.81 12 5.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.42 22 8.5C22 12.28 18.6 15.36 13.45 19.94L12.1 21.35Z"
+					stroke="currentColor"
+					strokeWidth="2"
+					fill="none"
+				/>
+			</svg>
+		);
+	}
+
+	if (name === "heart-filled") {
+		return (
+			<svg
+				width={size}
+				height={size}
+				viewBox="0 0 24 24"
+				fill="none"
+				className={className}
+				aria-hidden="true"
+			>
+				<path
+					d="M12.1 21.35L10.55 19.93C5.4 15.36 2 12.28 2 8.5C2 5.42 4.42 3 7.5 3C9.24 3 10.91 3.81 12 5.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.42 22 8.5C22 12.28 18.6 15.36 13.45 19.94L12.1 21.35Z"
+					fill="currentColor"
+				/>
+			</svg>
+		);
+	}
+
+	if (name === "copy") {
+		return (
+			<svg
+				width={size}
+				height={size}
+				viewBox="0 0 24 24"
+				fill="none"
+				className={className}
+				aria-hidden="true"
+			>
+				<path
+					d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z"
+					fill="currentColor"
+				/>
+			</svg>
+		);
+	}
+
+	if (name === "arrow-right") {
+		return (
+			<svg
+				width={size}
+				height={size}
+				viewBox="0 0 24 24"
+				fill="none"
+				className={className}
+				aria-hidden="true"
+			>
+				<path
+					d="M4 12H20M20 12L14 6M20 12L14 18"
+					stroke="currentColor"
+					strokeWidth="2"
+					strokeLinecap="round"
+					strokeLinejoin="round"
+				/>
+			</svg>
+		);
+	}
+
+	if (name === "gift") {
+		return (
+			<svg
+				width={size}
+				height={size}
+				viewBox="0 0 24 24"
+				fill="none"
+				className={className}
+				aria-hidden="true"
+			>
+				<path
+					d="M20 6H17.82C17.93 5.69 18 5.35 18 5C18 3.34 16.66 2 15 2C13.95 2 13.04 2.54 12.5 3.35L12 4.02L11.5 3.34C10.96 2.54 10.05 2 9 2C7.34 2 6 3.34 6 5C6 5.35 6.07 5.69 6.18 6H4C2.89 6 2.01 6.89 2.01 8L2 19C2 20.11 2.89 21 4 21H20C21.11 21 22 20.11 22 19V8C22 6.89 21.11 6 20 6ZM15 4C15.55 4 16 4.45 16 5C16 5.55 15.55 6 15 6C14.45 6 14 5.55 14 5C14 4.45 14.45 4 15 4ZM9 4C9.55 4 10 4.45 10 5C10 5.55 9.55 6 9 6C8.45 6 8 5.55 8 5C8 4.45 8.45 4 9 4ZM20 19H4V17H20V19ZM20 14H4V8H9.08L7 10.83L8.62 12L11 8.76L12 7.4L13 8.76L15.38 12L17 10.83L14.92 8H20V14Z"
+					fill="currentColor"
+				/>
+			</svg>
+		);
+	}
+
+	if (name === "pan-zoom") {
+		return (
+			<svg
+				width={size}
+				height={size}
+				viewBox="0 0 24 24"
+				fill="none"
+				className={className}
+				aria-hidden="true"
+			>
+				<path
+					d="M15 3L17.3 5.3L14.41 8.17L15.83 9.59L18.7 6.7L21 9V3H15ZM3 9L5.3 6.7L8.17 9.59L9.59 8.17L6.7 5.3L9 3H3V9ZM9 21L6.7 18.7L9.59 15.83L8.17 14.41L5.3 17.3L3 15V21H9ZM21 15L18.7 17.3L15.83 14.41L14.41 15.83L17.3 18.7L15 21H21V15Z"
+					fill="currentColor"
+				/>
+			</svg>
+		);
+	}
+
+	if (name === "search") {
+		return (
+			<svg
+				width={size}
+				height={size}
+				viewBox="0 0 24 24"
+				fill="none"
+				className={className}
+				aria-hidden="true"
+			>
+				<path
+					d="M15.5 14H14.71L14.43 13.73C15.41 12.59 16 11.11 16 9.5C16 5.91 13.09 3 9.5 3C5.91 3 3 5.91 3 9.5C3 13.09 5.91 16 9.5 16C11.11 16 12.59 15.41 13.73 14.43L14 14.71V15.5L19 20.49L20.49 19L15.5 14ZM9.5 14C7.01 14 5 11.99 5 9.5C5 7.01 7.01 5 9.5 5C11.99 5 14 7.01 14 9.5C14 11.99 11.99 14 9.5 14Z"
+					fill="currentColor"
+				/>
+			</svg>
+		);
+	}
+
+	if (name === "chevron-left") {
+		return (
+			<svg
+				width={size}
+				height={size}
+				viewBox="0 0 24 24"
+				fill="none"
+				className={className}
+				aria-hidden="true"
+			>
+				<path
+					d="M15.41 7.41L14 6L8 12L14 18L15.41 16.59L10.83 12L15.41 7.41Z"
+					fill="currentColor"
+				/>
+			</svg>
+		);
+	}
+
+	if (name === "chevron-right") {
+		return (
+			<svg
+				width={size}
+				height={size}
+				viewBox="0 0 24 24"
+				fill="none"
+				className={className}
+				aria-hidden="true"
+			>
+				<path
+					d="M8.59 16.59L10 18L16 12L10 6L8.59 7.41L13.17 12L8.59 16.59Z"
+					fill="currentColor"
+				/>
+			</svg>
+		);
+	}
+
+	if (name === "star") {
+		return (
+			<svg
+				width={size}
+				height={size}
+				viewBox="0 0 24 24"
+				fill="none"
+				className={className}
+				aria-hidden="true"
+			>
+				<path
+					d="M12 17.27L18.18 21L16.54 13.97L22 9.24L14.81 8.63L12 2L9.19 8.63L2 9.24L7.46 13.97L5.82 21L12 17.27Z"
+					fill="currentColor"
+				/>
+			</svg>
+		);
+	}
+
 	if (name === "pen") {
 		return (
 			<svg
