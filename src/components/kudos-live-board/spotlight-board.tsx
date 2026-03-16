@@ -25,6 +25,52 @@ function getSizeClass(ratio: number): string {
 	return SIZE_CLASSES[SIZE_CLASSES.length - 1].className;
 }
 
+/** Simple deterministic hash for stable jitter within grid cells */
+function hashStr(s: string): number {
+	let h = 0;
+	for (let i = 0; i < s.length; i++) {
+		h = (Math.imul(31, h) + s.charCodeAt(i)) | 0;
+	}
+	return Math.abs(h);
+}
+
+/**
+ * Grid-based scatter: divide the area into a grid and place one name
+ * per cell with small random jitter. This avoids overlap while still
+ * looking scattered like the Figma design.
+ */
+function gridScatterPositions(
+	entries: SpotlightEntry[],
+): { top: number; left: number }[] {
+	const count = entries.length;
+	if (count === 0) return [];
+
+	// Calculate grid dimensions — aim for roughly square cells
+	const cols = Math.ceil(Math.sqrt(count * 1.5));
+	const rows = Math.ceil(count / cols);
+
+	// Cell size in % — leave margin on edges
+	const marginX = 3;
+	const marginY = 5;
+	const cellW = (100 - 2 * marginX) / cols;
+	const cellH = (100 - 2 * marginY) / rows;
+
+	return entries.map((entry, i) => {
+		const row = Math.floor(i / cols);
+		const col = i % cols;
+		const h = hashStr(entry.user_id + i);
+
+		// Jitter within cell (0–60% of cell size to avoid touching edges)
+		const jitterX = ((h % 60) / 100) * cellW;
+		const jitterY = (((h >>> 8) % 60) / 100) * cellH;
+
+		return {
+			top: marginY + row * cellH + jitterY,
+			left: marginX + col * cellW + jitterX,
+		};
+	});
+}
+
 export function SpotlightBoard({
 	entries,
 	totalKudos,
@@ -38,6 +84,8 @@ export function SpotlightBoard({
 		() => Math.max(...entries.map((e) => e.kudos_count), 1),
 		[entries],
 	);
+
+	const positions = useMemo(() => gridScatterPositions(entries), [entries]);
 
 	const normalizedSearch = search.toLowerCase().trim();
 
@@ -92,19 +140,21 @@ export function SpotlightBoard({
 				<div className="w-48" />
 			</div>
 
-			{/* Word cloud area */}
-			<div className="relative z-10 flex flex-wrap items-center justify-center gap-x-5 gap-y-3 px-6 lg:px-10 py-4 min-h-[360px] lg:min-h-[440px]">
-				{entries.map((entry) => {
+			{/* Word cloud area — scattered positioning */}
+			<div className="relative z-10 min-h-[360px] lg:min-h-[440px]">
+				{entries.map((entry, i) => {
 					const ratio = entry.kudos_count / maxCount;
 					const sizeClass = getSizeClass(ratio);
 					const isMatch =
 						normalizedSearch.length > 0 &&
 						entry.name.toLowerCase().includes(normalizedSearch);
+					const pos = positions[i];
 
 					return (
 						<span
 							key={entry.user_id}
 							className={`
+								absolute whitespace-nowrap
 								font-[family-name:var(--font-montserrat)]
 								transition-all duration-150 ease-out
 								cursor-pointer
@@ -116,6 +166,10 @@ export function SpotlightBoard({
 										: "text-[var(--klb-color-text-white)]"
 								}
 							`}
+							style={{
+								top: `${pos.top}%`,
+								left: `${pos.left}%`,
+							}}
 						>
 							{entry.name}
 						</span>
@@ -138,28 +192,19 @@ export function SpotlightBoard({
 				</div>
 
 				{/* Pan/Zoom toggle — bottom-right */}
-				<div className="flex flex-col gap-1">
-					<button
-						type="button"
-						onClick={() => setPanZoomEnabled((prev) => !prev)}
-						aria-pressed={panZoomEnabled}
-						title={panZoomTooltip}
-						className={`p-1.5 rounded transition-colors cursor-pointer ${
-							panZoomEnabled
-								? "text-[var(--klb-color-accent-gold)]"
-								: "text-[var(--klb-color-text-white)]"
-						} hover:text-[var(--klb-color-accent-gold)]`}
-					>
-						<Icon name="pan-zoom" size={18} className="text-current" />
-					</button>
-					<button
-						type="button"
-						title={panZoomTooltip}
-						className="p-1.5 rounded text-[var(--klb-color-text-white)] hover:text-[var(--klb-color-accent-gold)] transition-colors cursor-pointer"
-					>
-						<Icon name="pan-zoom" size={18} className="text-current rotate-90" />
-					</button>
-				</div>
+				<button
+					type="button"
+					onClick={() => setPanZoomEnabled((prev) => !prev)}
+					aria-pressed={panZoomEnabled}
+					title={panZoomTooltip}
+					className={`p-1.5 rounded transition-colors cursor-pointer ${
+						panZoomEnabled
+							? "text-[var(--klb-color-accent-gold)]"
+							: "text-[var(--klb-color-text-white)]"
+					} hover:text-[var(--klb-color-accent-gold)]`}
+				>
+					<Icon name="pan-zoom" size={18} className="text-current" />
+				</button>
 			</div>
 		</div>
 	);

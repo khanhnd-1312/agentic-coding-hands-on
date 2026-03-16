@@ -18,7 +18,7 @@ export function KudosSidebar({
 	onOpenSecretBox,
 }: KudosSidebarProps) {
 	return (
-		<aside className="sticky top-[100px] flex flex-col gap-8 overflow-y-auto max-h-[calc(100vh-120px)]">
+		<aside className="sticky top-[100px] flex flex-col gap-8 max-h-[calc(100vh-120px)]">
 			<StatsPanel
 				stats={stats}
 				labels={dict.sidebar}

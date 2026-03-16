@@ -9,8 +9,8 @@ interface TopSunnerListProps {
 
 export function TopSunnerList({ title, items, emptyText }: TopSunnerListProps) {
 	return (
-		<div className="flex flex-col gap-4">
-			<h3 className="text-[22px] font-bold text-[var(--klb-color-accent-gold)] font-[family-name:var(--font-montserrat)]">
+		<div className="flex flex-col gap-4 min-h-0">
+			<h3 className="text-[22px] font-bold text-[var(--klb-color-accent-gold)] font-[family-name:var(--font-montserrat)] shrink-0">
 				{title}
 			</h3>
 
@@ -19,7 +19,7 @@ export function TopSunnerList({ title, items, emptyText }: TopSunnerListProps) {
 					{emptyText}
 				</p>
 			) : (
-				<ul className="flex flex-col gap-3">
+				<ul className="flex flex-col gap-3 overflow-y-auto">
 					{items.map((item, index) => (
 						<li key={`${item.user_id}-${index}`}>
 							<TopSunnerListItem item={item} />
