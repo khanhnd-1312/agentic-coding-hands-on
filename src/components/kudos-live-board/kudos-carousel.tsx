@@ -44,6 +44,10 @@ export function KudosCarousel({
 
 	if (totalSlides === 0) return null;
 
+	// Render exactly 3 slots: prev, current, next — centered via flex justify-center.
+	// Edge slots use invisible spacers when at first/last slide.
+	const visibleIndices = [currentSlide - 1, currentSlide, currentSlide + 1];
+
 	return (
 		<div
 			role="region"
@@ -53,62 +57,74 @@ export function KudosCarousel({
 			tabIndex={0}
 			className="flex flex-col items-center gap-6 outline-none"
 		>
-			{/* Carousel track with center-focus layout */}
-			<div className="relative w-full flex items-center">
-				{/* Left arrow */}
-				<div className="absolute left-2 xl:left-8 z-10">
+			{/* Carousel track */}
+			<div className="relative w-full overflow-hidden">
+				{/* Navigation arrows */}
+				<div className="absolute left-2 xl:left-8 top-1/2 -translate-y-1/2 z-20">
 					<CarouselButton
 						direction="prev"
 						onClick={goPrev}
 						disabled={currentSlide === 0}
 					/>
 				</div>
-
-				{/* Cards container — center-focus */}
-				<div className="w-full overflow-hidden px-12 xl:px-20">
-					<div className="relative flex items-center justify-center min-h-[380px] lg:min-h-[420px]">
-						{highlights.map((kudos, index) => {
-							const offset = index - currentSlide;
-
-							// Only render cards within visible range (-2 to +2)
-							if (Math.abs(offset) > 2) return null;
-
-							const isActive = offset === 0;
-							const isAdjacent = Math.abs(offset) === 1;
-
-							return (
-								<div
-									key={kudos.id}
-									role="group"
-									aria-roledescription="slide"
-									aria-label={`Slide ${index + 1} of ${totalSlides}`}
-									className="absolute transition-all duration-300 ease-in-out w-[280px] sm:w-[320px] lg:w-[380px]"
-									style={{
-										transform: `translateX(${offset * 105}%) scale(${isActive ? 1 : 0.9})`,
-										opacity: isActive ? 1 : isAdjacent ? 0.5 : 0.3,
-										zIndex: isActive ? 3 : isAdjacent ? 2 : 1,
-										pointerEvents: isActive ? "auto" : "none",
-									}}
-								>
-									<HighlightKudoCard
-										kudos={kudos}
-										currentUserId={currentUserId}
-										lang={lang}
-										onHashtagClick={onHashtagClick}
-									/>
-								</div>
-							);
-						})}
-					</div>
-				</div>
-
-				{/* Right arrow */}
-				<div className="absolute right-2 xl:right-8 z-10">
+				<div className="absolute right-2 xl:right-8 top-1/2 -translate-y-1/2 z-20">
 					<CarouselButton
 						direction="next"
 						onClick={goNext}
 						disabled={currentSlide === totalSlides - 1}
 					/>
+				</div>
+
+				{/* Visible cards — exactly 3 slots, centered */}
+				<div className="flex justify-center items-start">
+					{visibleIndices.map((idx) => {
+						if (idx < 0 || idx >= totalSlides) {
+							// Invisible spacer to keep center card centered at edges
+							return (
+								<div
+									key={`spacer-${idx}`}
+									className="shrink-0 w-[320px] sm:w-[420px] lg:w-[528px] px-[10px]"
+								/>
+							);
+						}
+
+						const kudos = highlights[idx];
+						const offset = idx - currentSlide;
+						const isActive = offset === 0;
+
+						// Gradient mask for side cards
+						let maskImage: string | undefined;
+						if (offset === -1) {
+							maskImage =
+								"linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0) 80%)";
+						} else if (offset === 1) {
+							maskImage =
+								"linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0) 80%)";
+						}
+
+						return (
+							<div
+								key={kudos.id}
+								role="group"
+								aria-roledescription="slide"
+								aria-label={`Slide ${idx + 1} of ${totalSlides}`}
+								className="shrink-0 w-[320px] sm:w-[420px] lg:w-[528px] px-[10px]"
+								style={{
+									zIndex: isActive ? 3 : 1,
+									pointerEvents: isActive ? "auto" : "none",
+									WebkitMaskImage: maskImage,
+									maskImage: maskImage,
+								}}
+							>
+								<HighlightKudoCard
+									kudos={kudos}
+									currentUserId={currentUserId}
+									lang={lang}
+									onHashtagClick={onHashtagClick}
+								/>
+							</div>
+						);
+					})}
 				</div>
 			</div>
 
