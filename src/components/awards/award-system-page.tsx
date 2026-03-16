@@ -21,22 +21,22 @@ export function AwardSystemPage({ awards, initialLang = "vi" }: AwardSystemPageP
 	const t = awardsDictionary[lang];
 
 	return (
-		<div className="bg-[#00101A] min-h-screen font-(family-name:--font-montserrat)">
+		<div className="relative bg-[#00101A] min-h-screen font-(family-name:--font-montserrat)">
 			<Header lang={lang} onLangChange={setLang} />
 
-			{/* Keyvisual Hero Banner */}
-			<div className="relative w-full h-136.75 overflow-hidden">
+			{/* Keyvisual Hero Banner — 547px image + 627px gradient overlay per design */}
+			<div className="relative w-full h-136.75">
 				<Image
 					src="/images/awards/kv-hero.png"
 					alt="Keyvisual Sun* Annual Award 2025"
 					fill
 					sizes="100vw"
-					style={{ objectFit: "cover" }}
+					className="object-cover"
 					priority
 				/>
-				{/* Gradient overlay */}
-				<div className="absolute inset-0 bg-linear-to-t from-[#00101A] to-transparent" />
 			</div>
+			{/* Cover gradient — 627px, extends 80px below the 547px hero into content area */}
+			<div className="absolute top-0 left-0 w-full h-156.75 bg-linear-to-t from-[#00101A] to-transparent z-[1] pointer-events-none" />
 
 			<main className="relative z-10 -mt-40 lg:-mt-50">
 				{/* Content area — gap:120px between major sections per design */}
@@ -59,7 +59,7 @@ export function AwardSystemPage({ awards, initialLang = "vi" }: AwardSystemPageP
 							Sun* Annual Awards 2025
 						</p>
 						<hr className="border-[#2E3940] w-full" />
-						<h1 className="text-[32px] md:text-[40px] lg:text-[57px] font-bold leading-10 md:leading-12 lg:leading-16 tracking-[-0.25px] text-[#FFEA9E] text-left">
+						<h1 className="text-[32px] md:text-[40px] lg:text-[57px] font-bold leading-10 md:leading-12 lg:leading-16 tracking-[-0.25px] text-[#FFEA9E] text-center">
 							{t.pageTitle}
 						</h1>
 					</div>

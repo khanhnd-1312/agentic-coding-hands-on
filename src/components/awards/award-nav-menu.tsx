@@ -31,7 +31,7 @@ export function AwardNavMenu({ categories, lang = "vi" }: AwardNavMenuProps) {
 									?.scrollIntoView({ behavior: "smooth" });
 							}}
 							className={[
-								"flex flex-row items-center gap-1 p-4 rounded text-left",
+								"flex flex-row items-start gap-1 p-4 rounded text-left",
 								"text-sm font-bold leading-5 tracking-[0.25px]",
 								"font-(family-name:--font-montserrat)",
 								"transition-[color,background-color,border-color] duration-150 ease-in-out",
@@ -42,7 +42,7 @@ export function AwardNavMenu({ categories, lang = "vi" }: AwardNavMenuProps) {
 									: "text-white hover:bg-[rgba(255,234,158,0.1)]",
 							].join(" ")}
 						>
-							<Icon name="target" size={24} />
+							<Icon name="target" size={24} className="shrink-0" />
 							{category.name}
 						</button>
 					);
