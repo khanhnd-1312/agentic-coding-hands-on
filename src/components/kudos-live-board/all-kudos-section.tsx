@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, type ReactNode } from "react";
-import { KudoPostCard } from "./kudo-post-card";
+import { HighlightKudoCard } from "./highlight-kudo-card";
 import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
 import { kudosLiveBoardDictionary } from "@/i18n/kudos-live-board";
 import type { Kudos, KudosListResponse } from "@/types/kudos";
@@ -94,13 +94,14 @@ export function AllKudosSection({
 						</p>
 					) : (
 						items.map((kudos) => (
-							<KudoPostCard
-								key={kudos.id}
-								kudos={kudos}
-								currentUserId={currentUserId}
-								lang={lang}
-								onHashtagClick={onHashtagClick}
-							/>
+							<div key={kudos.id} className="w-full max-w-[680px]">
+								<HighlightKudoCard
+									kudos={kudos}
+									currentUserId={currentUserId}
+									lang={lang}
+									onHashtagClick={onHashtagClick}
+								/>
+							</div>
 						))
 					)}
 
