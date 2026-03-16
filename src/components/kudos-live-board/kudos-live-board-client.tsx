@@ -116,11 +116,8 @@ export function KudosLiveBoardClient({
 
 	return (
 		<div className="flex flex-col">
-			{/* Hero Banner */}
-			<HeroBanner dict={dict} />
-
-			{/* Search bar overlay */}
-			<div className="px-4 xl:px-[var(--klb-spacing-page-x)] -mt-10 relative z-10 flex items-center gap-4">
+			{/* Hero Banner — search bar rendered inside on the background */}
+			<HeroBanner dict={dict}>
 				<KudosSearchInput
 					placeholder={dict.hero.searchPlaceholder}
 					onClick={() => {
@@ -128,10 +125,10 @@ export function KudosLiveBoardClient({
 					}}
 				/>
 				<ProfileSearchButton label={dict.hero.profileSearch} />
-			</div>
+			</HeroBanner>
 
 			{/* Main content sections */}
-			<div className="flex flex-col gap-[var(--klb-spacing-section-gap)] mt-16">
+			<div className="flex flex-col gap-[var(--klb-spacing-section-gap)] mt-16 pb-[var(--klb-spacing-section-gap)]">
 				<HighlightSection
 					highlights={highlights}
 					currentUserId={currentUserId}

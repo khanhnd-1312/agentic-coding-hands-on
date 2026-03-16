@@ -1,19 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import Image from "next/image";
-import { Icon } from "@/components/ui/icon";
 import type { KudosLiveBoardDictionary } from "@/i18n/kudos-live-board";
 
 interface HeroBannerProps {
 	dict: KudosLiveBoardDictionary;
+	children?: ReactNode;
 }
 
-export function HeroBanner({ dict }: HeroBannerProps) {
+export function HeroBanner({ dict, children }: HeroBannerProps) {
 	const [imageError, setImageError] = useState(false);
 
 	return (
-		<section className="relative w-full h-[360px] md:h-[400px] lg:h-[512px] overflow-hidden">
+		<section className="relative w-full h-[420px] md:h-[460px] lg:h-[512px] overflow-hidden">
 			{/* Background image */}
 			{!imageError && (
 				<Image
@@ -21,7 +21,7 @@ export function HeroBanner({ dict }: HeroBannerProps) {
 					alt=""
 					fill
 					priority
-					className="object-cover"
+					className="object-cover object-right"
 					onError={() => setImageError(true)}
 				/>
 			)}
@@ -37,23 +37,22 @@ export function HeroBanner({ dict }: HeroBannerProps) {
 			/>
 
 			{/* Content — positioned lower inside the background */}
-			<div className="relative z-10 flex flex-col justify-end h-full px-4 xl:px-[var(--klb-spacing-page-x)] pb-16 lg:pb-20">
+			<div className="relative z-10 flex flex-col items-start justify-end h-full px-4 xl:px-[var(--klb-spacing-page-x)] pb-6 lg:pb-10 gap-4">
 				<h2 className="text-2xl lg:text-4xl font-bold text-[var(--klb-color-accent-gold)] font-[family-name:var(--font-montserrat)] leading-tight">
 					{dict.hero.subtitle}
 				</h2>
-				<div className="flex items-center gap-2 mt-1">
-					<Icon
-						name="sun-flame"
-						size={60}
-						className="text-[var(--klb-color-accent-gold)] shrink-0 lg:w-[80px] lg:h-[80px]"
-					/>
-					<span
-						className="text-[60px] md:text-[100px] lg:text-[139.78px] font-normal text-[var(--klb-color-accent-tan)] leading-none tracking-[-0.13em]"
-						style={{ fontFamily: "var(--font-svn-gotham, 'SVN-Gotham', sans-serif)" }}
-					>
-						{dict.hero.logo}
-					</span>
-				</div>
+				{/* KUDOS wordmark SVG — fixed size, left-aligned */}
+				<img
+					src="/images/homepage/kudos-wordmark.svg"
+					alt="KUDOS"
+					className="h-[50px] md:h-[60px] lg:h-[74px] w-auto max-w-[364px]"
+				/>
+				{/* Search bar — inside hero on the background */}
+				{children && (
+					<div className="flex items-center gap-4 mt-2">
+						{children}
+					</div>
+				)}
 			</div>
 		</section>
 	);

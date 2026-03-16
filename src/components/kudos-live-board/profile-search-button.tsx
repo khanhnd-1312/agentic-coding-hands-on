@@ -11,10 +11,10 @@ export function ProfileSearchButton({ label }: ProfileSearchButtonProps) {
 		<button
 			type="button"
 			aria-label={label}
-			className="flex items-center gap-2 px-6 py-3 rounded-full border border-[var(--klb-color-border-gold)] bg-transparent text-white font-[family-name:var(--font-montserrat)] text-base font-bold hover:border-[var(--klb-color-accent-gold)] focus:outline-2 focus:outline-[var(--klb-color-accent-gold)] focus:outline-offset-2 transition-colors duration-150 cursor-pointer"
+			className="flex items-center gap-3 h-[72px] px-6 rounded-full border border-[var(--klb-color-border-gold)] bg-transparent text-white font-[family-name:var(--font-montserrat)] text-base font-bold hover:border-[var(--klb-color-accent-gold)] focus:outline-2 focus:outline-[var(--klb-color-accent-gold)] focus:outline-offset-2 transition-colors duration-150 cursor-pointer shrink-0"
 		>
 			<Icon name="search" size={20} className="text-white" />
-			<span>{label}</span>
+			<span className="whitespace-nowrap">{label}</span>
 		</button>
 	);
 }
