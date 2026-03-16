@@ -34,21 +34,23 @@ export function KudoPostCard({
 }: KudoPostCardProps) {
 	const isSender = currentUserId === kudos.sender_id;
 
-	// First hashtag used as category badge (D.4 in spec)
-	const categoryBadge = kudos.hashtags.length > 0 ? kudos.hashtags[0] : null;
+	// First hashtag used as category label (D.4 in spec — e.g., "IDOL GIỚI TRẺ")
+	const categoryLabel = kudos.hashtags.length > 0 ? kudos.hashtags[0] : null;
 	const remainingHashtags = kudos.hashtags.slice(1);
 
 	return (
 		<article className="bg-[var(--klb-color-bg-card)] rounded-lg p-6 flex flex-col gap-4">
-			{/* Sender → Receiver */}
-			<div className="flex items-center gap-3 flex-wrap">
-				<UserInfoBlock user={kudos.sender} lang={lang} />
-				<Icon
-					name="arrow-right"
-					size={16}
-					className="text-[var(--klb-color-text-muted)] shrink-0"
-				/>
-				<UserInfoBlock user={kudos.receiver} lang={lang} />
+			{/* Sender ▷ Receiver — vertical avatar layout */}
+			<div className="flex items-start justify-center gap-6">
+				<UserInfoBlock user={kudos.sender} />
+				<div className="pt-4">
+					<Icon
+						name="arrow-right"
+						size={20}
+						className="text-[var(--klb-color-text-muted)]"
+					/>
+				</div>
+				<UserInfoBlock user={kudos.receiver} />
 			</div>
 
 			{/* Timestamp */}
@@ -56,22 +58,23 @@ export function KudoPostCard({
 				{formatTimestamp(kudos.created_at)}
 			</time>
 
-			{/* Category badge (D.4) */}
-			{categoryBadge && (
-				<button
-					type="button"
-					onClick={() => onHashtagClick?.(categoryBadge.id)}
-					className="self-start px-3 py-1 rounded bg-[var(--klb-color-heart-red)]/10 text-[var(--klb-color-heart-red)] text-xs font-bold font-[family-name:var(--font-montserrat)] uppercase tracking-wide cursor-pointer hover:bg-[var(--klb-color-heart-red)]/20 transition-colors"
-				>
-					{categoryBadge.name.replace(/^#/, "")}
-				</button>
+			{/* Category label + edit icon */}
+			{categoryLabel && (
+				<div className="flex items-center justify-center gap-3">
+					<span className="text-base font-bold text-gray-900 font-[family-name:var(--font-montserrat)] uppercase tracking-wide">
+						{categoryLabel.name.replace(/^#/, "")}
+					</span>
+					<Icon name="pen" size={16} className="text-gray-500" />
+				</div>
 			)}
 
-			{/* Content — card body click navigates to detail */}
+			{/* Content in lighter background box */}
 			<Link href={`/kudo/${kudos.id}`} className="block">
-				<p className="text-xl font-bold text-gray-900 font-[family-name:var(--font-montserrat)] leading-8 line-clamp-5">
-					{kudos.content}
-				</p>
+				<div className="bg-[var(--klb-color-bg-card-alt)] rounded-lg p-4">
+					<p className="text-xl font-bold text-gray-900 font-[family-name:var(--font-montserrat)] leading-8 line-clamp-5">
+						{kudos.content}
+					</p>
+				</div>
 			</Link>
 
 			{/* Image gallery */}

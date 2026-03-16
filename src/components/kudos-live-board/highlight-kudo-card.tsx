@@ -35,21 +35,23 @@ export function HighlightKudoCard({
 	const t = kudosLiveBoardDictionary[lang].highlight;
 	const isSender = currentUserId === kudos.sender_id;
 
-	// First hashtag used as category badge (D.4 in spec)
-	const categoryBadge = kudos.hashtags.length > 0 ? kudos.hashtags[0] : null;
+	// First hashtag used as category label (D.4 — e.g., "IDOL GIỚI TRẺ")
+	const categoryLabel = kudos.hashtags.length > 0 ? kudos.hashtags[0] : null;
 	const remainingHashtags = kudos.hashtags.slice(1);
 
 	return (
-		<article className="bg-[var(--klb-color-bg-card)] rounded-lg p-6 flex flex-col gap-3 min-w-0">
-			{/* Sender → Receiver */}
-			<div className="flex items-center gap-3 flex-wrap">
-				<UserInfoBlock user={kudos.sender} lang={lang} />
-				<Icon
-					name="arrow-right"
-					size={16}
-					className="text-[var(--klb-color-text-muted)] shrink-0"
-				/>
-				<UserInfoBlock user={kudos.receiver} lang={lang} />
+		<article className="bg-[var(--klb-color-bg-card)] rounded-lg p-5 flex flex-col gap-3 min-w-0">
+			{/* Sender ▷ Receiver — vertical avatar layout */}
+			<div className="flex items-start justify-center gap-4">
+				<UserInfoBlock user={kudos.sender} />
+				<div className="pt-4">
+					<Icon
+						name="arrow-right"
+						size={18}
+						className="text-[var(--klb-color-text-muted)]"
+					/>
+				</div>
+				<UserInfoBlock user={kudos.receiver} />
 			</div>
 
 			{/* Timestamp */}
@@ -57,22 +59,20 @@ export function HighlightKudoCard({
 				{formatTimestamp(kudos.created_at)}
 			</time>
 
-			{/* Category badge (D.4) */}
-			{categoryBadge && (
-				<button
-					type="button"
-					onClick={() => onHashtagClick?.(categoryBadge.id)}
-					className="self-start px-3 py-1 rounded bg-[var(--klb-color-heart-red)]/10 text-[var(--klb-color-heart-red)] text-xs font-bold font-[family-name:var(--font-montserrat)] uppercase tracking-wide cursor-pointer hover:bg-[var(--klb-color-heart-red)]/20 transition-colors"
-				>
-					{categoryBadge.name.replace(/^#/, "")}
-				</button>
+			{/* Category label centered */}
+			{categoryLabel && (
+				<p className="text-sm font-bold text-gray-900 font-[family-name:var(--font-montserrat)] uppercase tracking-wide text-center">
+					{categoryLabel.name.replace(/^#/, "")}
+				</p>
 			)}
 
-			{/* Content — 3-line truncation, clickable to detail */}
+			{/* Content — 3-line truncation in lighter bg box */}
 			<Link href={`/kudo/${kudos.id}`} className="block">
-				<p className="text-xl font-bold text-gray-900 font-[family-name:var(--font-montserrat)] leading-8 line-clamp-3">
-					{kudos.content}
-				</p>
+				<div className="bg-[var(--klb-color-bg-card-alt)] rounded-lg p-3">
+					<p className="text-base font-bold text-gray-900 font-[family-name:var(--font-montserrat)] leading-7 line-clamp-3">
+						{kudos.content}
+					</p>
+				</div>
 			</Link>
 
 			{/* Hashtags */}
@@ -103,9 +103,10 @@ export function HighlightKudoCard({
 					<CopyLinkButton kudosId={kudos.id} lang={lang} />
 					<Link
 						href={`/kudo/${kudos.id}`}
-						className="text-sm font-bold text-[var(--klb-color-heart-red)] hover:underline font-[family-name:var(--font-montserrat)] focus:outline-2 focus:outline-[var(--klb-color-accent-gold)] focus:outline-offset-2 rounded"
+						className="text-sm font-bold text-[var(--klb-color-heart-red)] hover:underline font-[family-name:var(--font-montserrat)] focus:outline-2 focus:outline-[var(--klb-color-accent-gold)] focus:outline-offset-2 rounded flex items-center gap-1"
 					>
 						{t.viewDetail}
+						<Icon name="arrow-up" size={14} className="text-current" />
 					</Link>
 				</div>
 			</div>
