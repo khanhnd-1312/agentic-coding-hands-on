@@ -30,7 +30,7 @@ export function HeroSection({ lang = "vi" }: HeroSectionProps) {
 				className="absolute inset-0 z-[1]"
 				style={{
 					background:
-						"linear-gradient(12deg, #00101A 0%, rgba(0,16,26,0.85) 40%, transparent 100%)",
+						"linear-gradient(12deg, #00101A, transparent)",
 				}}
 			/>
 

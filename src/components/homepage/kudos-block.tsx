@@ -44,18 +44,18 @@ export function KudosBlock({ lang = "vi" }: KudosBlockProps) {
 					href="/kudo/live"
 					aria-label={t.detail}
 					className={[
-						"inline-flex items-center justify-center",
-						"w-[127px] h-[56px] p-4",
-						"bg-[#FFEA9E] rounded-sm",
-						"text-[#00101A] text-base font-bold",
-						"transition-[background-color,box-shadow] duration-150 ease-in-out",
-						"hover:bg-[#FFE480] hover:shadow-[0_4px_12px_rgba(255,234,158,0.4)]",
-						"active:bg-[#FFD740] active:scale-[0.98]",
-						"focus:outline-2 focus:outline-[#15D5CA] focus:outline-offset-2",
+						"inline-flex items-center gap-2",
+						"w-[127px] h-[56px] px-4 rounded",
+						"bg-[#FFEA9E] text-[#00101A]",
+						"text-base font-bold leading-6 tracking-[0.15px]",
+						"font-(family-name:--font-montserrat)",
+						"transition-[background-color] duration-150 ease-in-out",
+						"hover:bg-[#F5DF8A]",
+						"focus:outline-2 focus:outline-[#FFEA9E] focus:outline-offset-2",
 					].join(" ")}
 				>
 					{t.detail}
-					<Icon name="arrow-up" size={16} />
+					<Icon name="arrow-up" size={24} />
 				</Link>
 			</div>
 

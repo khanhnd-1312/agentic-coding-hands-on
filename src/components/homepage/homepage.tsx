@@ -31,7 +31,7 @@ export function HomePage({ awards = [], initialLang = "vi" }: HomePageProps) {
 
 			<Header lang={lang} onLangChange={setLang} />
 
-			<main id="main-content" className="pt-20">
+			<main id="main-content">
 				<HeroSection lang={lang} />
 
 				<div

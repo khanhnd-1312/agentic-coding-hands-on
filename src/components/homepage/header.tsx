@@ -12,12 +12,17 @@ import type { LanguagePreference } from "@/types/login";
 interface HeaderProps {
 	lang?: LanguagePreference;
 	onLangChange?: (lang: LanguagePreference) => void;
+	/** Override active nav detection. When set, matched against NAV_HREFS instead of pathname. */
+	activePage?: string;
 }
 
 const NAV_HREFS = ["/", "/awards", "/kudo/live"];
 
-export function Header({ lang = "vi", onLangChange }: HeaderProps) {
+export function Header({ lang = "vi", onLangChange, activePage }: HeaderProps) {
 	const pathname = usePathname();
+	const activeHref = activePage
+		? NAV_HREFS.find((h) => h.includes(activePage)) ?? pathname
+		: pathname;
 	const handleLangChange = onLangChange ?? (() => {});
 	const [notificationCount, setNotificationCount] = useState(0);
 	const t = homepageDictionary[lang].nav;
@@ -63,7 +68,7 @@ export function Header({ lang = "vi", onLangChange }: HeaderProps) {
 				{/* Nav links (gap 24px per Figma node I2167:9091;178:653) */}
 				<nav aria-label="Main navigation" className="flex items-center gap-6">
 					{navLinks.map(({ label, href }) => {
-						const isActive = pathname === href;
+						const isActive = activeHref === href;
 						return (
 							<Link
 								key={href}
@@ -74,7 +79,7 @@ export function Header({ lang = "vi", onLangChange }: HeaderProps) {
 									"transition-[color,background-color] duration-150 ease-in-out",
 									"focus:outline-2 focus:outline-[#15D5CA] focus:outline-offset-2",
 									isActive
-										? "text-[#FFEA9E] border-b border-[#FFEA9E]"
+										? "text-[#FFEA9E] border-b border-[#FFEA9E] [text-shadow:0_4px_4px_rgba(0,0,0,0.25),0_0_6px_#FAE287]"
 										: "text-white hover:text-[#FFEA9E] rounded-[4px]",
 								].join(" ")}
 							>
