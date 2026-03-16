@@ -45,7 +45,7 @@ export function KudoPostCard({
 				<UserInfoBlock user={kudos.sender} />
 				<div className="pt-4">
 					<Icon
-						name="arrow-right"
+						name="play-right"
 						size={20}
 						className="text-[var(--klb-color-text-muted)]"
 					/>

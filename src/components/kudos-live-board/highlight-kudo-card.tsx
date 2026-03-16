@@ -46,7 +46,7 @@ export function HighlightKudoCard({
 				<UserInfoBlock user={kudos.sender} />
 				<div className="pt-4">
 					<Icon
-						name="arrow-right"
+						name="play-right"
 						size={18}
 						className="text-[var(--klb-color-text-muted)]"
 					/>
@@ -103,7 +103,7 @@ export function HighlightKudoCard({
 					<CopyLinkButton kudosId={kudos.id} lang={lang} />
 					<Link
 						href={`/kudo/${kudos.id}`}
-						className="text-sm font-bold text-[var(--klb-color-heart-red)] hover:underline font-[family-name:var(--font-montserrat)] focus:outline-2 focus:outline-[var(--klb-color-accent-gold)] focus:outline-offset-2 rounded flex items-center gap-1"
+						className="text-sm font-bold text-gray-900 hover:underline font-[family-name:var(--font-montserrat)] focus:outline-2 focus:outline-[var(--klb-color-accent-gold)] focus:outline-offset-2 rounded flex items-center gap-1"
 					>
 						{t.viewDetail}
 						<Icon name="arrow-up" size={14} className="text-current" />

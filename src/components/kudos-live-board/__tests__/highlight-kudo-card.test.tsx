@@ -70,7 +70,7 @@ describe("HighlightKudoCard", () => {
 		expect(content.className).toMatch(/line-clamp-3/);
 	});
 
-	it("renders hashtags", () => {
+	it("renders first hashtag as category label and remaining as hashtags", () => {
 		render(
 			<HighlightKudoCard
 				kudos={mockKudos}
@@ -78,7 +78,9 @@ describe("HighlightKudoCard", () => {
 				lang="vi"
 			/>,
 		);
-		expect(screen.getByText("#Dedicated")).toBeInTheDocument();
+		// First hashtag becomes category label (without #, visually uppercased via CSS)
+		expect(screen.getByText("Dedicated")).toBeInTheDocument();
+		// Second hashtag rendered as clickable hashtag
 		expect(screen.getByText("#Inspiring")).toBeInTheDocument();
 	});
 

@@ -39,8 +39,11 @@ export function HeartButton({
 				isLoading ? "pointer-events-none opacity-70" : "",
 			].join(" ")}
 		>
+			<span className="text-sm font-bold text-gray-900 font-[family-name:var(--font-montserrat)]">
+				{heartCount.toLocaleString()}
+			</span>
 			<Icon
-				name={isLiked ? "heart-filled" : "heart"}
+				name="heart-filled"
 				size={20}
 				className={
 					isLiked
@@ -48,9 +51,6 @@ export function HeartButton({
 						: "text-[var(--klb-color-text-muted)]"
 				}
 			/>
-			<span className="text-sm font-bold text-gray-900">
-				{heartCount}
-			</span>
 		</button>
 	);
 }
