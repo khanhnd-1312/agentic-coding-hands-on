@@ -3,7 +3,7 @@
 **Project**: Agentic Coding Hands-on (SAA 2025)
 **Figma File Key**: `9ypp4enmFmdK3YAFJLIu6C`
 **Figma URL**: https://www.figma.com/design/9ypp4enmFmdK3YAFJLIu6C/SAA-2025---Internal-Live-Coding
-**Last Updated**: 2026-03-13
+**Last Updated**: 2026-03-17
 
 ---
 
@@ -12,10 +12,10 @@
 | Metric | Value |
 |--------|-------|
 | Total Frames | 17 |
-| Fully Specified | 6 (Login, Homepage SAA, Hệ thống giải, Countdown - Prelaunch, Dropdown-ngôn ngữ, Sun* Kudos - Live board) |
+| Fully Specified | 7 (Login, Homepage SAA, Hệ thống giải, Countdown - Prelaunch, Dropdown-ngôn ngữ, Sun* Kudos - Live board, Viết Kudo) |
 | In Progress | 0 |
-| Remaining | 11 |
-| Completion | 35% |
+| Remaining | 10 |
+| Completion | 41% |
 
 ---
 
@@ -26,7 +26,7 @@
 | Login | `662:14387` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/662:14387) | ✅ spec | `specs/662-14387-Login/` | `supabase.auth.signInWithOAuth` | → Homepage, → Dropdown-ngôn ngữ |
 | Homepage SAA | `2167:9026` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/2167:9026) | ✅ spec | `specs/2167-9026-Homepage-SAA/` | `GET /awards`, `GET /notifications` | ← Login, → Awards Info, → Sun* Kudos, → Viết Kudo, → Live board |
 | Countdown - Prelaunch page | `2268:35127` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/2268:35127) | ✅ spec | `specs/2268-35127-Countdown-Prelaunch-page/` | `GET /countdown` | → Login |
-| Viết Kudo | `520:11602` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/520:11602) | pending | - | `POST /kudos` | ← Homepage, → Addlink Box |
+| Viết Kudo | `520:11602` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/520:11602) | ✅ spec | `specs/520-11602-Viet-Kudo/` | `POST /kudos`, `GET /sunners/search`, `POST /media/upload` | ← Homepage, ← Live board, → Addlink Box, → Dropdown Phòng ban, → Dropdown list hashtag |
 | Sun* Kudos - Live board | `2940:13431` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/2940:13431) | ✅ spec | `specs/2940-13431-sun-kudos-live-board/` | `GET /kudos/live`, `GET /kudos/highlight`, `GET /kudos/spotlight`, `GET /kudos/stats`, `GET /secretbox/stats`, `GET /sunners/recent-gifts` | ← Homepage, ← Hệ thống giải, → Dropdown list hashtag, → Dropdown Phòng ban, → Open secret box, → Viết Kudo |
 | Hệ thống giải | `313:8436` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/313:8436) | ✅ spec | `specs/313-8436-He-thong-giai/` | `GET /awards` | ← Homepage, → Sun* Kudos |
 | Open secret box- chưa mở | `1466:7676` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/1466:7676) | pending | - | `POST /secretbox/open` | ← Homepage |
@@ -57,7 +57,7 @@ flowchart TD
     %% Main
 
     %% Features
-    VietKudo["Viết Kudo\n(520:11602)"]
+    VietKudo["Viết Kudo\n(520:11602)\n✅ spec"]
     LiveBoard["Sun* Kudos - Live board\n(2940:13431)"]
     HeThoGiai["Hệ thống giải\n(313:8436)\n✅ spec"]
     SecretBox["Open secret box\n(1466:7676)"]
@@ -224,6 +224,144 @@ flowchart TD
 
 ---
 
+## Screen Detail: Viết Kudo — Write Kudo (`520:11602`)
+
+**Route**: `/kudo/new`
+**Figma**: [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/520:11602)
+**Image**: [Frame Preview](https://momorph.ai/api/images/9ypp4enmFmdK3YAFJLIu6C/520:11602/2a59143b0305d622e49b962fdf2cb2c7.png)
+
+### Purpose
+
+Modal/overlay form that allows authenticated users to compose and send a Kudo (appreciation message) to a colleague. The screen appears as a dialog overlaying the current page (Homepage or Live board) with a semi-transparent mask backdrop.
+
+### Section Layout
+
+```
++---------------------------------------------------------------+
+| Header (LOGO | Nav Links | Language | Notification | Profile) |
++---------------------------------------------------------------+
+| [Mask] Semi-transparent overlay backdrop                       |
+|                                                                |
+|  +---------------------------+-------------------------------+ |
+|  | Left: Bìa (Cover Card)   | Right: Viết KUDO Form         | |
+|  |                           |                                | |
+|  | Sender Info:              | [A] Title: "Gửi lời cám ơn    | |
+|  |  - Avatar                 |     và ghi nhận đến đồng đội"  | |
+|  |  - Name                   |                                | |
+|  |  - Badge (CEVC3)          | [B] Chọn người nhận *          | |
+|  |  - Level (Mầm non)        |   [B.1] Label + required       | |
+|  |  - Stars (3)              |   [B.2] Search dropdown        | |
+|  |                           |                                | |
+|  | Danh hiệu (Badges):      | [B'] Chọn phòng ban *          | |
+|  |  - 7 badge icons          |   Department dropdown          | |
+|  |  - Labels per badge       |   (with helper text)           | |
+|  |                           |                                | |
+|  | Footer:                   | [C] Content (Rich Text Editor) | |
+|  |  - "Xem trang cá nhân"   |   [C.1] Bold                   | |
+|  |    (View profile) button  |   [C.2] Italic                 | |
+|  |                           |   [C.3] Strikethrough          | |
+|  +---------------------------+   [C.4] Numbered List           | |
+|                               |   [C.5] Link                   | |
+|  Keyvisual background image   |   [C.6] Quote                  | |
+|                               |   [C.7] Emoji picker           | |
+|                               |   [C.8] Title toggle           | |
+|                               | [D] Text field (multiline)     | |
+|                               | [D.1] Hint: "@ + tên" mention | |
+|                               |                                | |
+|                               | [E] Hashtags *                 | |
+|                               |   [E.1] Label + required       | |
+|                               |   [E.2] Tag group (+ button)   | |
+|                               |                                | |
+|                               | [F] Đính kèm ảnh (Images)     | |
+|                               |   [F.1] Label                  | |
+|                               |   [F.2-F.5] Image thumbnails   | |
+|                               |     with close (x) buttons     | |
+|                               |   [F.6] Add more (+) button    | |
+|                               |                                | |
+|                               | [G] Gửi ẩn danh (Anonymous)   | |
+|                               |   Checkbox toggle               | |
+|                               |                                | |
+|                               | [H] Actions                    | |
+|                               |   [H.1] Cancel (X) button      | |
+|                               |   [H.2] Send (Gửi) button      | |
+|                               +--------------------------------+ |
++---------------------------------------------------------------+
+```
+
+### Navigation Flows (from this screen)
+
+| Trigger | Action | Target Screen | Frame ID |
+|---------|--------|---------------|----------|
+| [B.2] Receiver search dropdown | Opens sunner search/select | (inline autocomplete) | - |
+| [B'] Department dropdown click | Opens department selector | Dropdown Phòng ban | `721:5684` |
+| [C.5] Link toolbar button | Opens add link dialog | Addlink Box | `1002:12917` |
+| [E.2] Hashtag "+" button | Opens hashtag selector | Dropdown list hashtag | `1002:13013` |
+| [H.1] Cancel button | Closes modal, returns to previous | Homepage SAA / Live board | `2167:9026` / `2940:13431` |
+| [H.2] Send button | Submits kudo, closes modal | Homepage SAA / Live board | `2167:9026` / `2940:13431` |
+| Header - Language selector | Opens language dropdown | Dropdown-ngôn ngữ | `721:4942` |
+| Header - Profile avatar | Opens profile dropdown | Dropdown-profile | `721:5223` |
+| "Xem trang cá nhân" link (cover card) | Navigates to sender's profile | (external/profile page) | - |
+
+### Navigation Flows (to this screen)
+
+| Source Screen | Trigger | Frame ID |
+|---------------|---------|----------|
+| Homepage SAA | "Write Kudo" CTA / FAB | `2167:9026` |
+| Sun* Kudos - Live board | [A.1] Write-Kudo input click or "Ghi nhận" button | `2940:13431` |
+
+### Form Fields
+
+| Field | ID | Type | Required | Validation | Notes |
+|-------|----|------|----------|------------|-------|
+| Receiver (Chọn người nhận) | B | Search dropdown | Yes (*) | Must select valid sunner | Autocomplete search by name |
+| Department (Chọn phòng ban) | B' | Dropdown | Yes (*) | Must select department | Opens Dropdown Phòng ban overlay; helper text shown below |
+| Content (Nội dung) | D | Rich text (multiline) | Yes | Min length TBD | Supports bold, italic, strikethrough, numbered list, link, quote, emoji, title; mention with "@name" |
+| Hashtags | E | Tag picker | Yes (*) | At least 1 hashtag | Opens Dropdown list hashtag; multiple selection |
+| Images (Đính kèm ảnh) | F | Image upload | No | Max ~5 images shown | Thumbnail preview with remove (x) button; "+" to add more |
+| Anonymous (Gửi ẩn danh) | G | Checkbox | No | - | Toggle to send kudo without revealing sender identity |
+
+### Data Requirements
+
+| Section | API Endpoint | Data |
+|---------|-------------|------|
+| [B.2] Receiver search | `GET /api/sunners/search?q={query}` | Autocomplete list of sunners (name, avatar, department) |
+| [B'] Department dropdown | `GET /api/departments` | List of departments for filtering |
+| [E.2] Hashtag picker | `GET /api/hashtags` | Available hashtag list |
+| [F] Image upload | `POST /api/media/upload` | Upload image files, returns URLs |
+| [H.2] Submit kudo | `POST /api/kudos` | Payload: receiver_id, department_id, content (rich text), hashtag_ids[], image_urls[], is_anonymous |
+| Left panel (Bìa) | Current user session | Sender avatar, name, badge (CEVC3), level (Mầm non), stars, badges/danh hiệu list |
+
+### Interactive Behaviors
+
+| Component | Interaction | Behavior |
+|-----------|-------------|----------|
+| Mask overlay | Click outside form | Closes the modal (returns to previous screen) |
+| Receiver search (B.2) | Type in field | Autocomplete dropdown with matching sunner names; select to populate |
+| Department dropdown (B') | Click field | Opens Dropdown Phòng ban overlay component |
+| Rich text toolbar (C.1-C.8) | Click toolbar button | Toggles formatting on selected text or at cursor position |
+| Link button (C.5) | Click | Opens Addlink Box dialog to insert a URL |
+| Emoji picker (C.7) | Click | Opens emoji picker popover |
+| Title toggle (C.8) | Click | Toggles title/heading format for current line |
+| Hashtag "+" (E.2) | Click | Opens Dropdown list hashtag to select/add hashtags |
+| Image thumbnail (F.2-F.5) | Click "x" button | Removes the image from the attachment list |
+| Add image "+" (F.6) | Click | Opens file picker to upload additional image |
+| Anonymous checkbox (G) | Toggle | Enables/disables anonymous sending; when checked, sender info hidden from receiver |
+| Cancel button (H.1) | Click | Closes modal without saving; may show unsaved changes confirmation |
+| Send button (H.2) | Click | Validates required fields, submits kudo via `POST /api/kudos`, shows success toast, closes modal |
+| Cover card badges | Display | Shows sender's earned badges/danh hiệu as visual icons |
+| "Xem trang cá nhân" | Click | Navigates to the current user's profile page |
+
+### Left Panel: Bìa (Cover Card)
+
+The left panel displays the current user's (sender's) profile information as a decorative "cover card" with a Keyvisual background image:
+
+- **Sender info**: Avatar, full name, badge code (e.g., "CEVC3"), level text (e.g., "Mầm non"), star count with icon
+- **Danh hiệu (Badges)**: Row of 7 badge icons with labels, representing achievements/titles earned
+- **Footer**: "Xem trang cá nhân" (View profile) button linking to the sender's profile page
+- **Background**: Keyvisual artwork (image 1) behind the card content
+
+---
+
 ## API Endpoints Summary
 
 | Endpoint | Method | Used By |
@@ -231,12 +369,14 @@ flowchart TD
 | `supabase.auth.signInWithOAuth` | - | Login |
 | `supabase.auth.signOut` | - | Dropdown-profile, Dropdown-profile Admin |
 | `/auth/callback` | GET | Login (OAuth callback) |
-| `/api/kudos` | GET, POST | Homepage, Viết Kudo, Live board (All Kudos feed) |
+| `/api/kudos` | GET, POST | Homepage, Viết Kudo (submit form), Live board (All Kudos feed) |
 | `/api/kudos/highlight` | GET | Live board (Highlight Kudos carousel) |
 | `/api/kudos/spotlight` | GET | Live board (Spotlight Board word cloud) |
 | `/api/kudos/stats` | GET | Live board (Stats sidebar - kudos sent/received/hearts) |
 | `/api/secretbox/stats` | GET | Live board (Stats sidebar - secret box opened/unopened) |
 | `/api/sunners/recent-gifts` | GET | Live board (10 Sunner recent gift recipients) |
+| `/api/sunners/search` | GET | Viết Kudo (receiver autocomplete search) |
+| `/api/media/upload` | POST | Viết Kudo (image attachment upload) |
 | `/api/awards` | GET | Hệ thống giải |
 | `/api/departments` | GET | Dropdown Phòng ban |
 | `/api/hashtags` | GET | Dropdown Hashtag filter, Dropdown list hashtag |
@@ -299,6 +439,7 @@ flowchart LR
 | 2026-03-13 | Spec created | Dropdown-ngôn ngữ `721:4942` — language selector dropdown (VN/EN) with flag icons, selected state highlight, client-side i18n, shared header overlay component |
 | 2026-03-13 | Spec created | Sun* Kudos - Live board `2940:13431` — full-page Kudos live board with 5 sections: (A) Hero Banner with KV Kudos + write-kudo input, (B) Highlight Kudos carousel (top 5 by hearts) with hashtag/department filters + Spotlight word cloud board with search + pan/zoom, (C) All Kudos feed with sender/receiver cards, hearts, copy-link, attached images, (D) Stats sidebar with kudos sent/received/hearts/secret-box counts, "Mở quà" CTA, and 10 recent gift recipients list |
 | 2026-03-13 | Frames updated | Total frames updated from 14 to 17 (added Floating Action Button, Floating Action Button 2, Thể lệ UPDATE) |
+| 2026-03-17 | Spec created | Viết Kudo `520:11602` — modal/overlay kudo compose form with: (Left) sender profile cover card with avatar, name, badge, level, stars, 7 danh hiệu badges, "Xem trang cá nhân" link over Keyvisual background; (Right) form with receiver search (autocomplete), department dropdown, rich text editor (bold/italic/strikethrough/numbered-list/link/quote/emoji/title), hashtag picker, image attachments (up to 5 with remove), anonymous toggle checkbox, cancel/send actions |
 
 ---
 
@@ -307,7 +448,7 @@ flowchart LR
 - [x] Run `/momorph.specify` for Homepage SAA (`2167:9026`)
 - [x] Run `/momorph.specify` for Hệ thống giải (`313:8436`)
 - [x] Run `/momorph.specify` for Dropdown-ngôn ngữ (`721:4942`)
-- [ ] Run `/momorph.specify` for Viết Kudo (`520:11602`)
+- [x] Run `/momorph.specify` for Viết Kudo (`520:11602`)
 - [ ] Create API spec (`.momorph/API.yml`)
 - [ ] Design database schema (`.momorph/database.sql`)
 - [ ] Run `/momorph.plan` for Login after spec review
