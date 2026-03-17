@@ -2,6 +2,10 @@ import { render, screen } from "@testing-library/react";
 import { HighlightKudoCard } from "../highlight-kudo-card";
 import type { Kudos } from "@/types/kudos";
 
+function tiptapDoc(text: string) {
+	return { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text }] }] };
+}
+
 vi.mock("next/image", () => ({
 	default: (props: Record<string, unknown>) => <img {...props} />,
 }));
@@ -19,8 +23,10 @@ const mockKudos: Kudos = {
 	id: "kudo-1",
 	sender_id: "user-1",
 	receiver_id: "user-2",
+	title: "",
+	is_anonymous: false,
 	content:
-		"This is a very long highlight kudos message that should be truncated after three lines of text to keep the card compact in the carousel view.",
+		tiptapDoc("This is a very long highlight kudos message that should be truncated after three lines of text to keep the card compact in the carousel view."),
 	images: [],
 	heart_count: 100,
 	created_at: "2025-10-30T10:00:00Z",

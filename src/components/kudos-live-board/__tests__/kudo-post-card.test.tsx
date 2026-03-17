@@ -2,6 +2,10 @@ import { render, screen } from "@testing-library/react";
 import { KudoPostCard } from "../kudo-post-card";
 import type { Kudos } from "@/types/kudos";
 
+function tiptapDoc(text: string) {
+	return { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text }] }] };
+}
+
 // Mock Next.js modules
 vi.mock("next/image", () => ({
 	default: (props: Record<string, unknown>) => <img {...props} />,
@@ -20,8 +24,10 @@ const mockKudos: Kudos = {
 	id: "kudo-1",
 	sender_id: "user-1",
 	receiver_id: "user-2",
+	title: "",
+	is_anonymous: false,
 	content:
-		"This is a very long kudos message that should be truncated after five lines of text to prevent the card from becoming too tall in the feed.",
+		tiptapDoc("This is a very long kudos message that should be truncated after five lines of text to prevent the card from becoming too tall in the feed."),
 	images: [
 		"https://example.com/img1.jpg",
 		"https://example.com/img2.jpg",

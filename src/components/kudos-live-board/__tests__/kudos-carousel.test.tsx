@@ -2,6 +2,10 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { KudosCarousel } from "../kudos-carousel";
 import type { Kudos } from "@/types/kudos";
 
+function tiptapDoc(text: string) {
+	return { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text }] }] };
+}
+
 vi.mock("next/image", () => ({
 	default: (props: Record<string, unknown>) => <img {...props} />,
 }));
@@ -20,7 +24,9 @@ function createMockKudos(id: string): Kudos {
 		id,
 		sender_id: "user-1",
 		receiver_id: "user-2",
-		content: `Kudos message for ${id}`,
+		title: "",
+		is_anonymous: false,
+		content: tiptapDoc(`Kudos message for ${id}`),
 		images: [],
 		heart_count: 10,
 		created_at: "2025-10-30T10:00:00Z",

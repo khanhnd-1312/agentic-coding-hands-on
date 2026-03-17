@@ -1,6 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { NextRequest } from "next/server";
 
+function tiptapDoc(text: string) {
+	return { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text }] }] };
+}
+
 // Mock Supabase server client
 const mockSelect = vi.fn();
 const mockEq = vi.fn();
@@ -41,7 +45,9 @@ describe("GET /api/kudos", () => {
 					id: "k1",
 					sender_id: "user-1",
 					receiver_id: "user-2",
-					content: "Great work!",
+					title: "",
+					is_anonymous: false,
+					content: tiptapDoc("Great work!"),
 					images: [],
 					heart_count: 5,
 					created_at: "2025-10-30T10:00:00Z",
