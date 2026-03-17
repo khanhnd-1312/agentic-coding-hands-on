@@ -488,5 +488,93 @@ export function Icon({ name, size, className }: IconProps) {
 		);
 	}
 
+	if (name === "bold") {
+		return (
+			<svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+				<path d="M15.6 10.79C16.57 10.12 17.25 9.02 17.25 8C17.25 5.74 15.5 4 13.25 4H7V18H14.04C16.13 18 17.75 16.3 17.75 14.21C17.75 12.69 16.89 11.39 15.6 10.79ZM10 6.5H13C13.83 6.5 14.5 7.17 14.5 8C14.5 8.83 13.83 9.5 13 9.5H10V6.5ZM13.5 15.5H10V12.5H13.5C14.33 12.5 15 13.17 15 14C15 14.83 14.33 15.5 13.5 15.5Z" fill="currentColor"/>
+			</svg>
+		);
+	}
+
+	if (name === "italic") {
+		return (
+			<svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+				<path d="M10 4V7H12.21L8.79 15H6V18H14V15H11.79L15.21 7H18V4H10Z" fill="currentColor"/>
+			</svg>
+		);
+	}
+
+	if (name === "strikethrough") {
+		return (
+			<svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+				<path d="M10 19H14V16H10V19ZM5 4V7H10V10H14V7H19V4H5ZM3 14H21V12H3V14Z" fill="currentColor"/>
+			</svg>
+		);
+	}
+
+	if (name === "list-ordered") {
+		return (
+			<svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+				<path d="M2 17H4V17.5H3V18.5H4V19H2V20H5V16H2V17ZM3 8H4V4H2V5H3V8ZM2 11H3.8L2 13.1V14H5V13H3.2L5 10.9V10H2V11ZM7 5V7H21V5H7ZM7 19H21V17H7V19ZM7 13H21V11H7V13Z" fill="currentColor"/>
+			</svg>
+		);
+	}
+
+	if (name === "quote") {
+		return (
+			<svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+				<path d="M6 17H9L11 13V7H5V13H8L6 17ZM14 17H17L19 13V7H13V13H16L14 17Z" fill="currentColor"/>
+			</svg>
+		);
+	}
+
+	if (name === "send") {
+		return (
+			<svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+				<path d="M2.01 21L23 12L2.01 3L2 10L17 12L2 14L2.01 21Z" fill="currentColor"/>
+			</svg>
+		);
+	}
+
+	if (name === "close") {
+		return (
+			<svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+				<path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" fill="currentColor"/>
+			</svg>
+		);
+	}
+
+	if (name === "plus") {
+		return (
+			<svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+				<path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z" fill="currentColor"/>
+			</svg>
+		);
+	}
+
+	if (name === "checkbox") {
+		return (
+			<svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+				<path d="M19 3H5C3.89 3 3 3.9 3 5V19C3 20.1 3.89 21 5 21H19C20.11 21 21 20.1 21 19V5C21 3.9 20.11 3 19 3ZM19 19H5V5H19V19Z" fill="currentColor"/>
+			</svg>
+		);
+	}
+
+	if (name === "checkbox-checked") {
+		return (
+			<svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+				<path d="M19 3H5C3.89 3 3 3.9 3 5V19C3 20.1 3.89 21 5 21H19C20.11 21 21 20.1 21 19V5C21 3.9 20.11 3 19 3ZM10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z" fill="currentColor"/>
+			</svg>
+		);
+	}
+
+	if (name === "dropdown-arrow") {
+		return (
+			<svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+				<path d="M7 10L12 15L17 10H7Z" fill="currentColor"/>
+			</svg>
+		);
+	}
+
 	return null;
 }

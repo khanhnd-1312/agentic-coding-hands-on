@@ -36,7 +36,9 @@ export const KudosSchema = z.object({
 	id: z.string().uuid(),
 	sender_id: z.string().uuid(),
 	receiver_id: z.string().uuid(),
-	content: z.string().min(1),
+	title: z.string().max(50).default(""),
+	content: z.record(z.string(), z.unknown()), // Tiptap JSON (JSONB)
+	is_anonymous: z.boolean().default(false),
 	images: z.array(z.string().url()).default([]),
 	heart_count: z.number().int().min(0),
 	created_at: z.string().datetime(),
@@ -89,6 +91,28 @@ export const SpecialDaySchema = z.object({
 	multiplier: z.number().int().min(1).default(2),
 });
 export type SpecialDay = z.infer<typeof SpecialDaySchema>;
+
+/* ─── Write Kudo Request Schemas ─────────────────────────────────── */
+
+export const CreateKudoSchema = z.object({
+	receiver_id: z.string().uuid(),
+	title: z.string().min(1).max(50),
+	content: z.record(z.string(), z.unknown()), // Tiptap JSON
+	hashtag_ids: z.array(z.string().uuid()).min(1).max(5),
+	image_urls: z.array(z.string().url()).max(5).default([]),
+	is_anonymous: z.boolean().default(false),
+});
+export type CreateKudo = z.infer<typeof CreateKudoSchema>;
+
+export const UserSearchQuerySchema = z.object({
+	q: z.string().min(1),
+});
+export type UserSearchQuery = z.infer<typeof UserSearchQuerySchema>;
+
+export const CreateHashtagSchema = z.object({
+	name: z.string().min(1).max(100),
+});
+export type CreateHashtag = z.infer<typeof CreateHashtagSchema>;
 
 /* ─── API Request Schemas ────────────────────────────────────────── */
 
@@ -162,6 +186,21 @@ export interface ProfilePreview {
 export interface SpecialDayTodayResponse {
 	is_special_day: boolean;
 	multiplier: number;
+}
+
+/* ─── Tiptap Content Helpers ─────────────────────────────────────── */
+
+/** Extract plain text from Tiptap JSON content for display in feeds */
+export function getContentText(content: Record<string, unknown>): string {
+	if (!content || typeof content !== "object") return "";
+	const extractText = (node: Record<string, unknown>): string => {
+		if (node.type === "text" && typeof node.text === "string") return node.text;
+		if (Array.isArray(node.content)) {
+			return (node.content as Record<string, unknown>[]).map(extractText).join("");
+		}
+		return "";
+	};
+	return extractText(content);
 }
 
 /* ─── Star Count Logic (BR-001) ──────────────────────────────────── */

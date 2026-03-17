@@ -6,7 +6,7 @@ import { HeartButton } from "./heart-button";
 import { CopyLinkButton } from "./copy-link-button";
 import { Icon } from "@/components/ui/icon";
 import { kudosLiveBoardDictionary } from "@/i18n/kudos-live-board";
-import type { Kudos } from "@/types/kudos";
+import { type Kudos, getContentText } from "@/types/kudos";
 import type { LanguagePreference } from "@/types/login";
 
 interface HighlightKudoCardProps {
@@ -43,7 +43,16 @@ export function HighlightKudoCard({
 		<article className="bg-[var(--klb-color-bg-card)] rounded-lg p-5 flex flex-col gap-3 min-w-0">
 			{/* Sender ▷ Receiver — vertical avatar layout */}
 			<div className="flex items-start justify-center gap-4">
-				<UserInfoBlock user={kudos.sender} />
+				{kudos.is_anonymous ? (
+					<div className="flex flex-col items-center gap-2">
+						<div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center">
+							<Icon name="user-avatar" size={20} className="text-gray-500" />
+						</div>
+						<span className="text-xs font-bold font-[family-name:var(--font-montserrat)] text-gray-500">Ẩn danh</span>
+					</div>
+				) : (
+					<UserInfoBlock user={kudos.sender} />
+				)}
 				<div className="pt-4">
 					<Icon
 						name="play-right"
@@ -53,6 +62,13 @@ export function HighlightKudoCard({
 				</div>
 				<UserInfoBlock user={kudos.receiver} />
 			</div>
+
+			{/* Title (Danh hiệu) */}
+			{kudos.title && (
+				<p className="text-sm font-bold text-[#FFEA9E] font-[family-name:var(--font-montserrat)] text-center">
+					{kudos.title}
+				</p>
+			)}
 
 			{/* Timestamp */}
 			<time className="text-sm text-[var(--klb-color-text-muted)] font-[family-name:var(--font-montserrat)]">
@@ -70,7 +86,7 @@ export function HighlightKudoCard({
 			<Link href={`/kudo/${kudos.id}`} className="block">
 				<div className="bg-[var(--klb-color-bg-card-alt)] rounded-lg p-3">
 					<p className="text-base font-bold text-gray-900 font-[family-name:var(--font-montserrat)] leading-7 line-clamp-3">
-						{kudos.content}
+						{getContentText(kudos.content)}
 					</p>
 				</div>
 			</Link>

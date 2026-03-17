@@ -6,7 +6,7 @@ import { ImageGallery } from "./image-gallery";
 import { HeartButton } from "./heart-button";
 import { CopyLinkButton } from "./copy-link-button";
 import { Icon } from "@/components/ui/icon";
-import type { Kudos } from "@/types/kudos";
+import { type Kudos, getContentText } from "@/types/kudos";
 import type { LanguagePreference } from "@/types/login";
 
 interface KudoPostCardProps {
@@ -42,7 +42,16 @@ export function KudoPostCard({
 		<article className="bg-[var(--klb-color-bg-card)] rounded-lg p-6 flex flex-col gap-4">
 			{/* Sender ▷ Receiver — vertical avatar layout */}
 			<div className="flex items-start justify-center gap-6">
-				<UserInfoBlock user={kudos.sender} />
+				{kudos.is_anonymous ? (
+					<div className="flex flex-col items-center gap-2">
+						<div className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center">
+							<Icon name="user-avatar" size={24} className="text-gray-500" />
+						</div>
+						<span className="text-sm font-bold font-[family-name:var(--font-montserrat)] text-gray-500">Ẩn danh</span>
+					</div>
+				) : (
+					<UserInfoBlock user={kudos.sender} />
+				)}
 				<div className="pt-4">
 					<Icon
 						name="play-right"
@@ -52,6 +61,13 @@ export function KudoPostCard({
 				</div>
 				<UserInfoBlock user={kudos.receiver} />
 			</div>
+
+			{/* Title (Danh hiệu) */}
+			{kudos.title && (
+				<p className="text-lg font-bold text-[#FFEA9E] font-[family-name:var(--font-montserrat)] text-center">
+					{kudos.title}
+				</p>
+			)}
 
 			{/* Timestamp */}
 			<time className="text-sm text-[var(--klb-color-text-muted)] font-[family-name:var(--font-montserrat)]">
@@ -72,7 +88,7 @@ export function KudoPostCard({
 			<Link href={`/kudo/${kudos.id}`} className="block">
 				<div className="bg-[var(--klb-color-bg-card-alt)] rounded-lg p-4">
 					<p className="text-xl font-bold text-gray-900 font-[family-name:var(--font-montserrat)] leading-8 line-clamp-5">
-						{kudos.content}
+						{getContentText(kudos.content)}
 					</p>
 				</div>
 			</Link>

@@ -147,3 +147,13 @@ body {
 	color: var(--foreground);
 	font-family: Arial, Helvetica, sans-serif;
 }
+
+/* ─── Tiptap editor placeholder ────────────────────────────────── */
+.tiptap p.is-editor-empty:first-child::before {
+	content: attr(data-placeholder);
+	float: left;
+	color: #999;
+	pointer-events: none;
+	height: 0;
+	font-weight: 700;
+}

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getApiAuth } from "@/libs/supabase/api-auth";
-import { KudosListQuerySchema } from "@/types/kudos";
+import { KudosListQuerySchema, CreateKudoSchema } from "@/types/kudos";
 import type { KudosListResponse } from "@/types/kudos";
 
 export async function GET(request: NextRequest) {
@@ -36,7 +36,9 @@ export async function GET(request: NextRequest) {
 				id,
 				sender_id,
 				receiver_id,
+				title,
 				content,
+				is_anonymous,
 				images,
 				heart_count,
 				created_at,
@@ -118,7 +120,9 @@ export async function GET(request: NextRequest) {
 					id: k.id as string,
 					sender_id: k.sender_id as string,
 					receiver_id: k.receiver_id as string,
-					content: k.content as string,
+					title: (k.title as string) ?? "",
+					content: k.content as Record<string, unknown>,
+					is_anonymous: (k.is_anonymous as boolean) ?? false,
 					images: (k.images as string[]) ?? [],
 					heart_count: (k.heart_count as number) ?? 0,
 					created_at: k.created_at as string,
@@ -152,7 +156,92 @@ export async function GET(request: NextRequest) {
 
 		return NextResponse.json(response);
 	} catch (err) {
-		console.error("[API /api/kudos] Unexpected error:", err);
+		console.error("[API /api/kudos GET] Unexpected error:", err);
+		return NextResponse.json(
+			{ error: "Internal server error" },
+			{ status: 500 },
+		);
+	}
+}
+
+export async function POST(request: NextRequest) {
+	try {
+		const body = await request.json();
+
+		const parsed = CreateKudoSchema.safeParse(body);
+		if (!parsed.success) {
+			return NextResponse.json(
+				{ error: "Invalid request body", details: parsed.error.flatten() },
+				{ status: 400 },
+			);
+		}
+
+		const { receiver_id, title, content, hashtag_ids, image_urls, is_anonymous } = parsed.data;
+
+		const auth = await getApiAuth();
+		if (auth instanceof NextResponse) return auth;
+		const { supabase, userId } = auth;
+
+		if (!userId) {
+			return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+		}
+
+		// Verify receiver exists
+		const { data: receiver, error: receiverError } = await supabase
+			.from("profiles")
+			.select("id")
+			.eq("id", receiver_id)
+			.single();
+
+		if (receiverError || !receiver) {
+			return NextResponse.json(
+				{ error: "Người nhận không hợp lệ" },
+				{ status: 422 },
+			);
+		}
+
+		// Insert kudo
+		const { data: kudo, error: kudoError } = await supabase
+			.from("kudos")
+			.insert({
+				sender_id: userId,
+				receiver_id,
+				title,
+				content,
+				is_anonymous,
+				images: image_urls,
+			})
+			.select("id, sender_id, receiver_id, title, content, is_anonymous, images, heart_count, created_at")
+			.single();
+
+		if (kudoError) {
+			console.error("[API /api/kudos POST] Insert error:", kudoError.message);
+			return NextResponse.json(
+				{ error: "Failed to create kudo", details: kudoError.message },
+				{ status: 500 },
+			);
+		}
+
+		// Insert hashtag associations
+		if (hashtag_ids.length > 0) {
+			const hashtagRows = hashtag_ids.map((hashtag_id) => ({
+				kudos_id: kudo.id,
+				hashtag_id,
+			}));
+
+			const { error: hashtagError } = await supabase
+				.from("kudos_hashtags")
+				.insert(hashtagRows);
+
+			if (hashtagError) {
+				console.error("[API /api/kudos POST] Hashtag insert error:", hashtagError.message);
+				// Kudo was created but hashtags failed — log but don't fail the whole request
+			}
+		}
+
+		return NextResponse.json({ data: kudo }, { status: 201 });
+	} catch (err) {
+		console.error("[API /api/kudos POST] Unexpected error:", err);
 		return NextResponse.json(
 			{ error: "Internal server error" },
 			{ status: 500 },

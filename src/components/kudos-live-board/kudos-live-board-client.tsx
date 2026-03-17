@@ -1,7 +1,13 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import dynamic from "next/dynamic";
 import { HeroBanner } from "./hero-banner";
+
+const WriteKudoModal = dynamic(
+	() => import("@/components/write-kudo/write-kudo-modal").then((m) => ({ default: m.WriteKudoModal })),
+	{ ssr: false },
+);
 import { KudosSearchInput } from "./kudos-search-input";
 import { ProfileSearchButton } from "./profile-search-button";
 import { HighlightSection } from "./highlight-section";
@@ -45,6 +51,7 @@ export function KudosLiveBoardClient({
 }: KudosLiveBoardClientProps) {
 	const dict = kudosLiveBoardDictionary[lang];
 
+	const [isWriteKudoOpen, setIsWriteKudoOpen] = useState(false);
 	const [hashtags, setHashtags] = useState<FilterOption[]>([]);
 	const [departments, setDepartments] = useState<FilterOption[]>([]);
 	const [selectedHashtag, setSelectedHashtag] = useState<string | null>(null);
@@ -115,14 +122,13 @@ export function KudosLiveBoardClient({
 	}, []);
 
 	return (
+		<>
 		<div className="flex flex-col">
 			{/* Hero Banner — search bar rendered inside on the background */}
 			<HeroBanner dict={dict}>
 				<KudosSearchInput
 					placeholder={dict.hero.searchPlaceholder}
-					onClick={() => {
-						// TODO: open compose kudos dialog
-					}}
+					onClick={() => setIsWriteKudoOpen(true)}
 				/>
 				<ProfileSearchButton label={dict.hero.profileSearch} />
 			</HeroBanner>
@@ -170,5 +176,17 @@ export function KudosLiveBoardClient({
 				/>
 			</div>
 		</div>
+
+			{/* Write Kudo Modal — lazy loaded */}
+			{isWriteKudoOpen && (
+				<WriteKudoModal
+					isOpen={isWriteKudoOpen}
+					onClose={() => setIsWriteKudoOpen(false)}
+					onSuccess={() => {
+						window.location.reload();
+					}}
+				/>
+			)}
+		</>
 	);
 }
