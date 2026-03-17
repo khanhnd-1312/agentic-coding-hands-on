@@ -28,7 +28,13 @@
       "Bash(npx tsc:*)",
       "Bash(wc -c /Users/nguyen.duy.khanhc/Projects/testspaces/agentic-coding-hands-on/src/fonts/digital-numbers.woff2)",
       "Bash(node -e \"const {z} = require\\(''zod''\\); console.log\\(z.enum\\([''vi'',''en'']\\).catch\\(''vi''\\).parse\\(''invalid''\\)\\)\")",
-      "Bash(node -e \"import\\(''zod''\\).then\\(\\({z}\\) => console.log\\(z.enum\\([''vi'',''en'']\\).catch\\(''vi''\\).parse\\(''invalid''\\)\\)\\)\")"
+      "Bash(node -e \"import\\(''zod''\\).then\\(\\({z}\\) => console.log\\(z.enum\\([''vi'',''en'']\\).catch\\(''vi''\\).parse\\(''invalid''\\)\\)\\)\")",
+      "Bash(ls -la /Users/nguyen.duy.khanhc/Projects/testspaces/agentic-coding-hands-on/public/images/homepage/award-*.png)",
+      "mcp__momorph__get_related_design_items",
+      "Bash(identify /tmp/award-bg.png /tmp/signature-label.png)",
+      "Bash(convert /tmp/award-bg.png /tmp/signature-label.png -gravity center -composite /Users/nguyen.duy.khanhc/Projects/testspaces/agentic-coding-hands-on/public/images/awards/signature-creator.png)",
+      "Bash(find /Users/nguyen.duy.khanhc/Projects/testspaces/agentic-coding-hands-on/src -name *.test.ts -o -name *.test.tsx -o -name *.spec.ts -o -name *.spec.tsx)",
+      "Bash(node -e \"const {z} = require\\(''zod''\\); const s = z.object\\({id: z.string\\(\\).uuid\\(\\)}\\); console.log\\(s.safeParse\\({id: ''00000000-0000-0000-0000-000000000001''}\\)\\)\")"
     ]
   },
   "enabledMcpjsonServers": [
