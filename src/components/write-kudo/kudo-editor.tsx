@@ -8,8 +8,65 @@ import CharacterCount from "@tiptap/extension-character-count";
 import Placeholder from "@tiptap/extension-placeholder";
 import type { JSONContent } from "@tiptap/core";
 import { Icon } from "@/components/ui/icon";
+import { mentionSuggestionRender } from "./mention-suggestion";
 
 const MAX_CHARS = 1000;
+const MENTION_DEBOUNCE_MS = 300;
+
+interface MentionItem {
+	id: string;
+	label: string;
+}
+
+/**
+ * Creates a debounced mention search function with AbortController.
+ * Each call cancels the previous pending request + timer.
+ */
+function createDebouncedMentionSearch() {
+	let timer: ReturnType<typeof setTimeout> | null = null;
+	let abortController: AbortController | null = null;
+
+	return async (query: string): Promise<MentionItem[]> => {
+		// Cancel previous pending request
+		if (timer) clearTimeout(timer);
+		abortController?.abort();
+
+		if (query.length === 0) return [];
+
+		const controller = new AbortController();
+		abortController = controller;
+
+		return new Promise((resolve) => {
+			timer = setTimeout(async () => {
+				try {
+					const res = await fetch(
+						`/api/users/search?q=${encodeURIComponent(query)}`,
+						{ signal: controller.signal },
+					);
+					if (!res.ok) {
+						resolve([]);
+						return;
+					}
+					const body = (await res.json()) as {
+						data?: Array<{ id: string; name: string }>;
+					};
+					resolve(
+						body.data?.map((u) => ({
+							id: u.id,
+							label: u.name,
+						})) ?? [],
+					);
+				} catch {
+					if (!controller.signal.aborted) {
+						resolve([]);
+					}
+				}
+			}, MENTION_DEBOUNCE_MS);
+		});
+	};
+}
+
+const debouncedMentionSearch = createDebouncedMentionSearch();
 
 interface KudoEditorProps {
 	onChange: (content: JSONContent) => void;
@@ -33,26 +90,9 @@ export function KudoEditor({ onChange, error }: KudoEditorProps) {
 				HTMLAttributes: { class: "text-blue-600 font-bold" },
 				suggestion: {
 					char: "@",
-					items: async ({ query }: { query: string }) => {
-						if (query.length === 0) return [];
-						try {
-							const res = await fetch(
-								`/api/users/search?q=${encodeURIComponent(query)}`,
-							);
-							if (!res.ok) return [];
-							const body = (await res.json()) as { data?: Array<{ id: string; name: string }> };
-							return (
-								body.data?.map(
-									(u: { id: string; name: string }) => ({
-										id: u.id,
-										label: u.name,
-									}),
-								) ?? []
-							);
-						} catch {
-							return [];
-						}
-					},
+					items: ({ query }: { query: string }) =>
+						debouncedMentionSearch(query),
+					render: mentionSuggestionRender(),
 				},
 			}),
 			CharacterCount.configure({ limit: MAX_CHARS }),

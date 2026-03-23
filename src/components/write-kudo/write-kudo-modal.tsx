@@ -47,9 +47,11 @@ export function WriteKudoModal({
 
 	const modalRef = useRef<HTMLDivElement>(null);
 	const titleRef = useRef<HTMLHeadingElement>(null);
+	const submittedRef = useRef(false);
 
 	// ─── Submission ──────────────────────────────────────────────
 	const { submit, isSubmitting, error: submitError } = useCreateKudo(() => {
+		submittedRef.current = true;
 		onSuccess?.();
 		onClose();
 	});
@@ -146,6 +148,7 @@ export function WriteKudoModal({
 		if (!isOpen || !hasData) return;
 
 		const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+			if (submittedRef.current) return;
 			e.preventDefault();
 		};
 		window.addEventListener("beforeunload", handleBeforeUnload);
