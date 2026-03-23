@@ -42,14 +42,16 @@ export function HeroBanner({ dict, children }: HeroBannerProps) {
 					{dict.hero.subtitle}
 				</h2>
 				{/* KUDOS wordmark SVG — fixed size, left-aligned */}
-				<img
+				<Image
 					src="/images/homepage/kudos-wordmark.svg"
 					alt="KUDOS"
-					className="h-[50px] md:h-[60px] lg:h-[74px] w-auto max-w-[364px]"
+					width={364}
+					height={74}
+					className="h-[50px] md:h-[60px] lg:h-[74px] w-auto"
 				/>
 				{/* Search bar — inside hero on the background */}
 				{children && (
-					<div className="flex items-center gap-4 mt-2">
+					<div className="flex items-center gap-4 mt-2 w-full">
 						{children}
 					</div>
 				)}

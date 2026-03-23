@@ -8,8 +8,13 @@ export function PaginationIndicator({
 	total,
 }: PaginationIndicatorProps) {
 	return (
-		<span className="text-[32px] font-bold text-white font-[family-name:var(--font-montserrat)]">
-			{current}/{total}
+		<span className="font-bold font-[family-name:var(--font-montserrat)] flex items-baseline">
+			<span className="text-[32px] text-[var(--klb-color-accent-gold)]">
+				{current}
+			</span>
+			<span className="text-[20px] text-[var(--klb-color-text-muted)]">
+				/{total}
+			</span>
 		</span>
 	);
 }

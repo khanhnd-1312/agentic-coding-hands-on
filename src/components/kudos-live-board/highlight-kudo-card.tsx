@@ -6,7 +6,7 @@ import { HeartButton } from "./heart-button";
 import { CopyLinkButton } from "./copy-link-button";
 import { Icon } from "@/components/ui/icon";
 import { kudosLiveBoardDictionary } from "@/i18n/kudos-live-board";
-import { type Kudos, getContentText } from "@/types/kudos";
+import { type Kudos, getContentNodes } from "@/types/kudos";
 import type { LanguagePreference } from "@/types/login";
 
 interface HighlightKudoCardProps {
@@ -18,11 +18,11 @@ interface HighlightKudoCardProps {
 
 function formatTimestamp(isoString: string): string {
 	const date = new Date(isoString);
-	const hours = String(date.getUTCHours()).padStart(2, "0");
-	const minutes = String(date.getUTCMinutes()).padStart(2, "0");
-	const month = String(date.getUTCMonth() + 1).padStart(2, "0");
-	const day = String(date.getUTCDate()).padStart(2, "0");
-	const year = date.getUTCFullYear();
+	const hours = String(date.getHours()).padStart(2, "0");
+	const minutes = String(date.getMinutes()).padStart(2, "0");
+	const month = String(date.getMonth() + 1).padStart(2, "0");
+	const day = String(date.getDate()).padStart(2, "0");
+	const year = date.getFullYear();
 	return `${hours}:${minutes} - ${month}/${day}/${year}`;
 }
 
@@ -35,9 +35,8 @@ export function HighlightKudoCard({
 	const t = kudosLiveBoardDictionary[lang].highlight;
 	const isSender = currentUserId === kudos.sender_id;
 
-	// First hashtag used as category label (D.4 — e.g., "IDOL GIỚI TRẺ")
-	const categoryLabel = kudos.hashtags.length > 0 ? kudos.hashtags[0] : null;
-	const remainingHashtags = kudos.hashtags.slice(1);
+	// Title field is the danh hiệu / category label (e.g., "IDOL GIỚI TRẺ")
+	// All hashtags show below content — no splitting needed
 
 	return (
 		<article className="bg-[var(--klb-color-bg-card)] rounded-lg p-5 flex flex-col gap-3 min-w-0">
@@ -75,10 +74,10 @@ export function HighlightKudoCard({
 				{formatTimestamp(kudos.created_at)}
 			</time>
 
-			{/* Category label centered */}
-			{categoryLabel && (
+			{/* Title / Danh hiệu centered */}
+			{kudos.title && (
 				<p className="text-sm font-bold text-gray-900 font-[family-name:var(--font-montserrat)] uppercase tracking-wide text-center">
-					{categoryLabel.name.replace(/^#/, "")}
+					{kudos.title}
 				</p>
 			)}
 
@@ -86,15 +85,21 @@ export function HighlightKudoCard({
 			<Link href={`/kudo/${kudos.id}`} className="block">
 				<div className="bg-[var(--klb-color-bg-card-alt)] rounded-lg p-3">
 					<p className="text-base font-bold text-gray-900 font-[family-name:var(--font-montserrat)] leading-7 line-clamp-3">
-						{getContentText(kudos.content)}
+						{getContentNodes(kudos.content).map((node, i) =>
+							node.type === "mention" ? (
+								<span key={i} className="text-blue-600 font-bold">{node.text}</span>
+							) : (
+								<span key={i}>{node.text}</span>
+							),
+						)}
 					</p>
 				</div>
 			</Link>
 
 			{/* Hashtags */}
-			{remainingHashtags.length > 0 && (
+			{kudos.hashtags.length > 0 && (
 				<div className="flex gap-2 overflow-hidden max-h-6">
-					{remainingHashtags.map((tag) => (
+					{kudos.hashtags.map((tag) => (
 						<button
 							key={tag.id}
 							type="button"
@@ -108,7 +113,7 @@ export function HighlightKudoCard({
 			)}
 
 			{/* Actions */}
-			<div className="flex items-center justify-between pt-2 border-t border-gray-200">
+			<div className="flex items-center justify-between pt-2">
 				<HeartButton
 					kudosId={kudos.id}
 					initialIsLiked={kudos.is_liked_by_me}

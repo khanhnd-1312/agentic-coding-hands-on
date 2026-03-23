@@ -6,7 +6,7 @@ import { ImageGallery } from "./image-gallery";
 import { HeartButton } from "./heart-button";
 import { CopyLinkButton } from "./copy-link-button";
 import { Icon } from "@/components/ui/icon";
-import { type Kudos, getContentText } from "@/types/kudos";
+import { type Kudos, getContentNodes } from "@/types/kudos";
 import type { LanguagePreference } from "@/types/login";
 
 interface KudoPostCardProps {
@@ -18,11 +18,11 @@ interface KudoPostCardProps {
 
 function formatTimestamp(isoString: string): string {
 	const date = new Date(isoString);
-	const hours = String(date.getUTCHours()).padStart(2, "0");
-	const minutes = String(date.getUTCMinutes()).padStart(2, "0");
-	const month = String(date.getUTCMonth() + 1).padStart(2, "0");
-	const day = String(date.getUTCDate()).padStart(2, "0");
-	const year = date.getUTCFullYear();
+	const hours = String(date.getHours()).padStart(2, "0");
+	const minutes = String(date.getMinutes()).padStart(2, "0");
+	const month = String(date.getMonth() + 1).padStart(2, "0");
+	const day = String(date.getDate()).padStart(2, "0");
+	const year = date.getFullYear();
 	return `${hours}:${minutes} - ${month}/${day}/${year}`;
 }
 
@@ -33,10 +33,6 @@ export function KudoPostCard({
 	onHashtagClick,
 }: KudoPostCardProps) {
 	const isSender = currentUserId === kudos.sender_id;
-
-	// First hashtag used as category label (D.4 in spec — e.g., "IDOL GIỚI TRẺ")
-	const categoryLabel = kudos.hashtags.length > 0 ? kudos.hashtags[0] : null;
-	const remainingHashtags = kudos.hashtags.slice(1);
 
 	return (
 		<article className="bg-[var(--klb-color-bg-card)] rounded-lg p-6 flex flex-col gap-4">
@@ -62,25 +58,18 @@ export function KudoPostCard({
 				<UserInfoBlock user={kudos.receiver} />
 			</div>
 
-			{/* Title (Danh hiệu) */}
-			{kudos.title && (
-				<p className="text-lg font-bold text-[#FFEA9E] font-[family-name:var(--font-montserrat)] text-center">
-					{kudos.title}
-				</p>
-			)}
-
 			{/* Timestamp */}
 			<time className="text-sm text-[var(--klb-color-text-muted)] font-[family-name:var(--font-montserrat)]">
 				{formatTimestamp(kudos.created_at)}
 			</time>
 
-			{/* Category label + edit icon */}
-			{categoryLabel && (
-				<div className="flex items-center justify-center gap-3">
-					<span className="text-base font-bold text-gray-900 font-[family-name:var(--font-montserrat)] uppercase tracking-wide">
-						{categoryLabel.name.replace(/^#/, "")}
+			{/* Title / Danh hiệu + edit icon */}
+			{kudos.title && (
+				<div className="flex items-center justify-between">
+					<span className="flex-1 text-center text-base font-bold text-gray-900 font-[family-name:var(--font-montserrat)] uppercase tracking-wide">
+						{kudos.title}
 					</span>
-					<Icon name="pen" size={16} className="text-gray-500" />
+					<Icon name="pen" size={16} className="text-gray-500 shrink-0" />
 				</div>
 			)}
 
@@ -88,7 +77,18 @@ export function KudoPostCard({
 			<Link href={`/kudo/${kudos.id}`} className="block">
 				<div className="bg-[var(--klb-color-bg-card-alt)] rounded-lg p-4">
 					<p className="text-xl font-bold text-gray-900 font-[family-name:var(--font-montserrat)] leading-8 line-clamp-5">
-						{getContentText(kudos.content)}
+						{getContentNodes(kudos.content).map((node, i) =>
+							node.type === "mention" ? (
+								<span
+									key={i}
+									className="text-blue-600 font-bold"
+								>
+									{node.text}
+								</span>
+							) : (
+								<span key={i}>{node.text}</span>
+							),
+						)}
 					</p>
 				</div>
 			</Link>
@@ -97,9 +97,9 @@ export function KudoPostCard({
 			<ImageGallery images={kudos.images} />
 
 			{/* Hashtags — 1-line truncation */}
-			{remainingHashtags.length > 0 && (
+			{kudos.hashtags.length > 0 && (
 				<div className="flex gap-2 overflow-hidden max-h-6">
-					{remainingHashtags.map((tag) => (
+					{kudos.hashtags.map((tag) => (
 						<button
 							key={tag.id}
 							type="button"
@@ -113,7 +113,7 @@ export function KudoPostCard({
 			)}
 
 			{/* Actions: Heart + Copy Link */}
-			<div className="flex items-center justify-between pt-2 border-t border-gray-200">
+			<div className="flex items-center justify-between pt-2">
 				<HeartButton
 					kudosId={kudos.id}
 					initialIsLiked={kudos.is_liked_by_me}

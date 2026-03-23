@@ -1,12 +1,16 @@
 import { z } from "zod";
 
+/* ─── UUID helper (accepts any UUID-formatted string, not just RFC 4122) ── */
+const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const zUuid = () => z.string().regex(uuidPattern, "Invalid UUID format");
+
 /* ─── User / Sunner ──────────────────────────────────────────────── */
 
 export const UserSchema = z.object({
-	id: z.string().uuid(),
+	id: zUuid(),
 	name: z.string().min(1),
 	avatar_url: z.string().url().nullable(),
-	department_id: z.string().uuid().nullable(),
+	department_id: zUuid().nullable(),
 	department_name: z.string().nullable(),
 	kudos_received_count: z.number().int().min(0),
 	tim_points: z.number().int().min(0),
@@ -17,7 +21,7 @@ export type User = z.infer<typeof UserSchema>;
 /* ─── Department ─────────────────────────────────────────────────── */
 
 export const DepartmentSchema = z.object({
-	id: z.string().uuid(),
+	id: zUuid(),
 	name: z.string().min(1),
 });
 export type Department = z.infer<typeof DepartmentSchema>;
@@ -25,7 +29,7 @@ export type Department = z.infer<typeof DepartmentSchema>;
 /* ─── Hashtag ────────────────────────────────────────────────────── */
 
 export const HashtagSchema = z.object({
-	id: z.string().uuid(),
+	id: zUuid(),
 	name: z.string().min(1),
 });
 export type Hashtag = z.infer<typeof HashtagSchema>;
@@ -33,9 +37,9 @@ export type Hashtag = z.infer<typeof HashtagSchema>;
 /* ─── Kudos ──────────────────────────────────────────────────────── */
 
 export const KudosSchema = z.object({
-	id: z.string().uuid(),
-	sender_id: z.string().uuid(),
-	receiver_id: z.string().uuid(),
+	id: zUuid(),
+	sender_id: zUuid(),
+	receiver_id: zUuid(),
 	title: z.string().max(50).default(""),
 	content: z.record(z.string(), z.unknown()), // Tiptap JSON (JSONB)
 	is_anonymous: z.boolean().default(false),
@@ -64,9 +68,9 @@ export type Kudos = z.infer<typeof KudosSchema>;
 /* ─── Heart / Like ───────────────────────────────────────────────── */
 
 export const HeartSchema = z.object({
-	id: z.string().uuid(),
-	user_id: z.string().uuid(),
-	kudos_id: z.string().uuid(),
+	id: zUuid(),
+	user_id: zUuid(),
+	kudos_id: zUuid(),
 	is_special_day: z.boolean(),
 	created_at: z.string().datetime(),
 });
@@ -75,8 +79,8 @@ export type Heart = z.infer<typeof HeartSchema>;
 /* ─── Secret Box ─────────────────────────────────────────────────── */
 
 export const SecretBoxSchema = z.object({
-	id: z.string().uuid(),
-	user_id: z.string().uuid(),
+	id: zUuid(),
+	user_id: zUuid(),
 	is_opened: z.boolean(),
 	reward_content: z.string().nullable(),
 	opened_at: z.string().datetime().nullable(),
@@ -86,7 +90,7 @@ export type SecretBox = z.infer<typeof SecretBoxSchema>;
 /* ─── Special Day ────────────────────────────────────────────────── */
 
 export const SpecialDaySchema = z.object({
-	id: z.string().uuid(),
+	id: zUuid(),
 	date: z.string(), // YYYY-MM-DD
 	multiplier: z.number().int().min(1).default(2),
 });
@@ -95,10 +99,10 @@ export type SpecialDay = z.infer<typeof SpecialDaySchema>;
 /* ─── Write Kudo Request Schemas ─────────────────────────────────── */
 
 export const CreateKudoSchema = z.object({
-	receiver_id: z.string().uuid(),
+	receiver_id: zUuid(),
 	title: z.string().min(1).max(50),
 	content: z.record(z.string(), z.unknown()), // Tiptap JSON
-	hashtag_ids: z.array(z.string().uuid()).min(1).max(5),
+	hashtag_ids: z.array(zUuid()).min(1).max(5),
 	image_urls: z.array(z.string().url()).max(5).default([]),
 	is_anonymous: z.boolean().default(false),
 });
@@ -119,23 +123,23 @@ export type CreateHashtag = z.infer<typeof CreateHashtagSchema>;
 export const KudosListQuerySchema = z.object({
 	page: z.coerce.number().int().min(1).default(1),
 	limit: z.coerce.number().int().min(1).max(50).default(20),
-	hashtag: z.string().uuid().optional(),
-	department: z.string().uuid().optional(),
+	hashtag: zUuid().optional(),
+	department: zUuid().optional(),
 });
 export type KudosListQuery = z.infer<typeof KudosListQuerySchema>;
 
 export const KudosHighlightsQuerySchema = z.object({
-	hashtag: z.string().uuid().optional(),
-	department: z.string().uuid().optional(),
+	hashtag: zUuid().optional(),
+	department: zUuid().optional(),
 });
 export type KudosHighlightsQuery = z.infer<typeof KudosHighlightsQuerySchema>;
 
 export const KudosIdParamSchema = z.object({
-	id: z.string().uuid(),
+	id: zUuid(),
 });
 
 export const UserIdParamSchema = z.object({
-	id: z.string().uuid(),
+	id: zUuid(),
 });
 
 /* ─── API Response Types ─────────────────────────────────────────── */
@@ -195,12 +199,52 @@ export function getContentText(content: Record<string, unknown>): string {
 	if (!content || typeof content !== "object") return "";
 	const extractText = (node: Record<string, unknown>): string => {
 		if (node.type === "text" && typeof node.text === "string") return node.text;
+		if (node.type === "mention") {
+			const attrs = node.attrs as Record<string, unknown> | undefined;
+			if (attrs && typeof attrs.label === "string") return `@${attrs.label}`;
+		}
 		if (Array.isArray(node.content)) {
 			return (node.content as Record<string, unknown>[]).map(extractText).join("");
 		}
 		return "";
 	};
 	return extractText(content);
+}
+
+/** Structured node for rich rendering of Tiptap content */
+export interface ContentNode {
+	type: "text" | "mention";
+	text: string;
+	mentionId?: string;
+}
+
+/** Extract structured nodes from Tiptap JSON for rich rendering (with mentions) */
+export function getContentNodes(content: Record<string, unknown>): ContentNode[] {
+	if (!content || typeof content !== "object") return [];
+	const nodes: ContentNode[] = [];
+	const extract = (node: Record<string, unknown>): void => {
+		if (node.type === "text" && typeof node.text === "string") {
+			nodes.push({ type: "text", text: node.text });
+		} else if (node.type === "mention") {
+			const attrs = node.attrs as Record<string, unknown> | undefined;
+			if (attrs && typeof attrs.label === "string") {
+				nodes.push({
+					type: "mention",
+					text: `@${attrs.label}`,
+					mentionId: typeof attrs.id === "string" ? attrs.id : undefined,
+				});
+			}
+		} else if (node.type === "hardBreak") {
+			nodes.push({ type: "text", text: "\n" });
+		}
+		if (Array.isArray(node.content)) {
+			for (const child of node.content as Record<string, unknown>[]) {
+				extract(child);
+			}
+		}
+	};
+	extract(content);
+	return nodes;
 }
 
 /* ─── Star Count Logic (BR-001) ──────────────────────────────────── */

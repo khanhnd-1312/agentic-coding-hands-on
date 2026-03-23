@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, type ReactNode } from "react";
-import { HighlightKudoCard } from "./highlight-kudo-card";
+import { KudoPostCard } from "./kudo-post-card";
 import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
 import { kudosLiveBoardDictionary } from "@/i18n/kudos-live-board";
 import type { Kudos, KudosListResponse } from "@/types/kudos";
@@ -76,7 +76,7 @@ export function AllKudosSection({
 		<section className="flex flex-col gap-10">
 			{/* Section header */}
 			<div className="px-4 xl:px-[var(--klb-spacing-page-x)]">
-				<p className="text-sm font-bold text-[var(--klb-color-text-white)] font-[family-name:var(--font-montserrat)] tracking-wider uppercase">
+				<p className="text-2xl font-bold text-[var(--klb-color-text-white)] font-[family-name:var(--font-montserrat)]">
 					{t.caption}
 				</p>
 				<h2 className="text-4xl lg:text-[57px] font-bold text-[var(--klb-color-accent-gold)] font-[family-name:var(--font-montserrat)] leading-tight mt-2">
@@ -95,7 +95,7 @@ export function AllKudosSection({
 					) : (
 						items.map((kudos) => (
 							<div key={kudos.id} className="w-full max-w-[680px]">
-								<HighlightKudoCard
+								<KudoPostCard
 									kudos={kudos}
 									currentUserId={currentUserId}
 									lang={lang}
