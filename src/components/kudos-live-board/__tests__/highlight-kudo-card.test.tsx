@@ -1,6 +1,9 @@
 import { render, screen } from "@testing-library/react";
 import { HighlightKudoCard } from "../highlight-kudo-card";
+import { KudoLikeProvider } from "@/contexts/kudo-like-context";
 import type { Kudos } from "@/types/kudos";
+
+global.fetch = vi.fn();
 
 function tiptapDoc(text: string) {
 	return { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text }] }] };
@@ -49,11 +52,20 @@ const mockKudos: Kudos = {
 		{ id: "h2", name: "#Inspiring" },
 	],
 	is_liked_by_me: false,
+	is_my_kudo: false,
 };
+
+function renderWithProvider(ui: React.ReactElement) {
+	return render(
+		<KudoLikeProvider initialKudos={[{ id: mockKudos.id, is_liked_by_me: false, heart_count: mockKudos.heart_count }]}>
+			{ui}
+		</KudoLikeProvider>,
+	);
+}
 
 describe("HighlightKudoCard", () => {
 	it("renders sender and receiver names", () => {
-		render(
+		renderWithProvider(
 			<HighlightKudoCard
 				kudos={mockKudos}
 				currentUserId="user-3"
@@ -65,7 +77,7 @@ describe("HighlightKudoCard", () => {
 	});
 
 	it("renders content with 3-line truncation", () => {
-		render(
+		renderWithProvider(
 			<HighlightKudoCard
 				kudos={mockKudos}
 				currentUserId="user-3"
@@ -77,7 +89,7 @@ describe("HighlightKudoCard", () => {
 	});
 
 	it("renders first hashtag as category label and remaining as hashtags", () => {
-		render(
+		renderWithProvider(
 			<HighlightKudoCard
 				kudos={mockKudos}
 				currentUserId="user-3"
@@ -91,7 +103,7 @@ describe("HighlightKudoCard", () => {
 	});
 
 	it("renders heart count", () => {
-		render(
+		renderWithProvider(
 			<HighlightKudoCard
 				kudos={mockKudos}
 				currentUserId="user-3"
@@ -102,7 +114,7 @@ describe("HighlightKudoCard", () => {
 	});
 
 	it('renders "Xem chi tiết" link to detail page', () => {
-		render(
+		renderWithProvider(
 			<HighlightKudoCard
 				kudos={mockKudos}
 				currentUserId="user-3"
@@ -115,7 +127,7 @@ describe("HighlightKudoCard", () => {
 	});
 
 	it("card body links to detail page", () => {
-		render(
+		renderWithProvider(
 			<HighlightKudoCard
 				kudos={mockKudos}
 				currentUserId="user-3"

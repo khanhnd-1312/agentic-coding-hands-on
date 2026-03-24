@@ -122,7 +122,7 @@ describe("GET /api/kudos", () => {
 		expect(Array.isArray(body.data)).toBe(true);
 	});
 
-	it("each kudos item has sender, receiver, hashtags, is_liked_by_me", async () => {
+	it("each kudos item has sender, receiver, hashtags, is_liked_by_me, is_my_kudo", async () => {
 		const { GET } = await import("../route");
 		const response = await GET(createRequest());
 		const body = await response.json();
@@ -132,10 +132,27 @@ describe("GET /api/kudos", () => {
 		expect(item).toHaveProperty("receiver");
 		expect(item).toHaveProperty("hashtags");
 		expect(item).toHaveProperty("is_liked_by_me");
+		expect(item).toHaveProperty("is_my_kudo");
 		expect(item.sender).toHaveProperty("id");
 		expect(item.sender).toHaveProperty("name");
 		expect(item.sender).toHaveProperty("department_name");
 		expect(item.receiver).toHaveProperty("id");
+	});
+
+	it("is_my_kudo is true when current user is the sender", async () => {
+		// Current user is "user-1", mock data has sender_id: "user-1"
+		const { GET } = await import("../route");
+		const response = await GET(createRequest());
+		const body = await response.json();
+		expect(body.data[0].is_my_kudo).toBe(true);
+	});
+
+	it("is_my_kudo is false when current user is not the sender", async () => {
+		mockGetUser.mockResolvedValue({ data: { user: { id: "user-999" } } });
+		const { GET } = await import("../route");
+		const response = await GET(createRequest());
+		const body = await response.json();
+		expect(body.data[0].is_my_kudo).toBe(false);
 	});
 
 	it("defaults to page 1, limit 20", async () => {

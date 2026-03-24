@@ -27,12 +27,12 @@ function createContext() {
 	return { params: Promise.resolve({ id: kudosId }) };
 }
 
-function mockKudosFound(senderId = "user-sender") {
+function mockKudosFound(senderId = "user-sender", heartCount = 10) {
 	return {
 		select: vi.fn().mockReturnValue({
 			eq: vi.fn().mockReturnValue({
 				single: vi.fn().mockResolvedValue({
-					data: { id: kudosId, sender_id: senderId },
+					data: { id: kudosId, sender_id: senderId, heart_count: heartCount },
 					error: null,
 				}),
 			}),
@@ -133,9 +133,10 @@ describe("POST /api/kudos/[id]/like", () => {
 		expect(response.status).toBe(403);
 	});
 
-	it("returns 201 on successful like with tim_awarded=1", async () => {
+	it("returns 201 on successful like with correct response shape", async () => {
+		// heart_count: 11 simulates the post-increment value returned by the DB after RPC
 		mockFrom.mockImplementation((table: string) => {
-			if (table === "kudos") return mockKudosFound();
+			if (table === "kudos") return mockKudosFound("user-sender", 11);
 			if (table === "special_days") return mockSpecialDaysNone();
 			if (table === "kudos_hearts") {
 				return { insert: vi.fn().mockResolvedValue({ error: null }) };
@@ -147,8 +148,11 @@ describe("POST /api/kudos/[id]/like", () => {
 		expect(response.status).toBe(201);
 
 		const body = await response.json();
-		expect(body.liked).toBe(true);
+		expect(body.kudo_id).toBe(kudosId);
+		expect(body.heart_count).toBe(11);
 		expect(body.tim_awarded).toBe(1);
+		expect(body).not.toHaveProperty("liked");
+		expect(body).not.toHaveProperty("is_special_day");
 	});
 
 	it("returns 409 on duplicate like (unique constraint)", async () => {
@@ -165,9 +169,9 @@ describe("POST /api/kudos/[id]/like", () => {
 		expect(response.status).toBe(409);
 	});
 
-	it("awards 2 tim on special day", async () => {
+	it("awards 2 tim on special day and includes in response", async () => {
 		mockFrom.mockImplementation((table: string) => {
-			if (table === "kudos") return mockKudosFound();
+			if (table === "kudos") return mockKudosFound("user-sender", 10);
 			if (table === "special_days") return mockSpecialDaysActive(2);
 			if (table === "kudos_hearts") {
 				return { insert: vi.fn().mockResolvedValue({ error: null }) };
@@ -177,8 +181,9 @@ describe("POST /api/kudos/[id]/like", () => {
 
 		const response = await POST(createRequest("POST"), createContext());
 		const body = await response.json();
-		expect(body.is_special_day).toBe(true);
 		expect(body.tim_awarded).toBe(2);
+		expect(body.kudo_id).toBe(kudosId);
+		expect(body.heart_count).toBeDefined();
 	});
 });
 
@@ -220,10 +225,10 @@ describe("DELETE /api/kudos/[id]/like", () => {
 		expect(response.status).toBe(404);
 	});
 
-	it("returns 200 on successful unlike with tim_revoked=1", async () => {
+	it("returns 200 on successful unlike with correct response shape", async () => {
 		mockFrom.mockImplementation((table: string) => {
 			if (table === "kudos_hearts") return mockHeartsForDelete(false);
-			if (table === "kudos") return mockKudosFound();
+			if (table === "kudos") return mockKudosFound("user-sender", 5);
 			return {};
 		});
 
@@ -231,19 +236,23 @@ describe("DELETE /api/kudos/[id]/like", () => {
 		expect(response.status).toBe(200);
 
 		const body = await response.json();
-		expect(body.liked).toBe(false);
+		expect(body.kudo_id).toBe(kudosId);
+		expect(body.heart_count).toBe(4); // decremented after RPC
 		expect(body.tim_revoked).toBe(1);
+		expect(body).not.toHaveProperty("liked");
 	});
 
 	it("revokes 2 tim when heart was placed on special day", async () => {
 		mockFrom.mockImplementation((table: string) => {
 			if (table === "kudos_hearts") return mockHeartsForDelete(true);
-			if (table === "kudos") return mockKudosFound();
+			if (table === "kudos") return mockKudosFound("user-sender", 5);
 			return {};
 		});
 
 		const response = await DELETE(createRequest("DELETE"), createContext());
 		const body = await response.json();
+		expect(body.kudo_id).toBe(kudosId);
 		expect(body.tim_revoked).toBe(2);
+		expect(body.heart_count).toBeDefined();
 	});
 });

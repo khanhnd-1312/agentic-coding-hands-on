@@ -1,6 +1,9 @@
 import { render, screen } from "@testing-library/react";
 import { KudoPostCard } from "../kudo-post-card";
+import { KudoLikeProvider } from "@/contexts/kudo-like-context";
 import type { Kudos } from "@/types/kudos";
+
+global.fetch = vi.fn();
 
 function tiptapDoc(text: string) {
 	return { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text }] }] };
@@ -54,67 +57,60 @@ const mockKudos: Kudos = {
 		{ id: "h2", name: "#Inspiring" },
 	],
 	is_liked_by_me: false,
+	is_my_kudo: false,
 };
+
+function renderWithProvider(ui: React.ReactElement) {
+	return render(
+		<KudoLikeProvider initialKudos={[{ id: mockKudos.id, is_liked_by_me: false, heart_count: mockKudos.heart_count }]}>
+			{ui}
+		</KudoLikeProvider>,
+	);
+}
 
 describe("KudoPostCard", () => {
 	it("renders sender info (name and department)", () => {
-		render(
-			<KudoPostCard kudos={mockKudos} currentUserId="user-3" lang="vi" />,
-		);
+		renderWithProvider(<KudoPostCard kudos={mockKudos} currentUserId="user-3" lang="vi" />);
 		expect(screen.getByText("Nguyen Van A")).toBeInTheDocument();
 		expect(screen.getByText("Engineering")).toBeInTheDocument();
 	});
 
 	it("renders receiver info (name and department)", () => {
-		render(
-			<KudoPostCard kudos={mockKudos} currentUserId="user-3" lang="vi" />,
-		);
+		renderWithProvider(<KudoPostCard kudos={mockKudos} currentUserId="user-3" lang="vi" />);
 		expect(screen.getByText("Tran Thi B")).toBeInTheDocument();
 		expect(screen.getByText("Design")).toBeInTheDocument();
 	});
 
 	it("renders timestamp in HH:mm - MM/DD/YYYY format", () => {
-		render(
-			<KudoPostCard kudos={mockKudos} currentUserId="user-3" lang="vi" />,
-		);
+		renderWithProvider(<KudoPostCard kudos={mockKudos} currentUserId="user-3" lang="vi" />);
 		// 10:00 UTC → formatted as HH:mm - MM/DD/YYYY
 		expect(screen.getByText(/10:00 - 10\/30\/2025/)).toBeInTheDocument();
 	});
 
 	it("renders kudos content", () => {
-		render(
-			<KudoPostCard kudos={mockKudos} currentUserId="user-3" lang="vi" />,
-		);
+		renderWithProvider(<KudoPostCard kudos={mockKudos} currentUserId="user-3" lang="vi" />);
 		expect(screen.getByText(/This is a very long kudos/)).toBeInTheDocument();
 	});
 
 	it("applies 5-line truncation to content", () => {
-		render(
-			<KudoPostCard kudos={mockKudos} currentUserId="user-3" lang="vi" />,
-		);
+		renderWithProvider(<KudoPostCard kudos={mockKudos} currentUserId="user-3" lang="vi" />);
 		const content = screen.getByText(/This is a very long kudos/);
 		expect(content.className).toMatch(/line-clamp-5/);
 	});
 
 	it("renders hashtags", () => {
-		render(
-			<KudoPostCard kudos={mockKudos} currentUserId="user-3" lang="vi" />,
-		);
+		renderWithProvider(<KudoPostCard kudos={mockKudos} currentUserId="user-3" lang="vi" />);
 		expect(screen.getByText("#Dedicated")).toBeInTheDocument();
 		expect(screen.getByText("#Inspiring")).toBeInTheDocument();
 	});
 
 	it("renders heart count", () => {
-		render(
-			<KudoPostCard kudos={mockKudos} currentUserId="user-3" lang="vi" />,
-		);
+		renderWithProvider(<KudoPostCard kudos={mockKudos} currentUserId="user-3" lang="vi" />);
 		expect(screen.getByText("42")).toBeInTheDocument();
 	});
 
 	it("renders images when present", () => {
-		render(
-			<KudoPostCard kudos={mockKudos} currentUserId="user-3" lang="vi" />,
-		);
+		renderWithProvider(<KudoPostCard kudos={mockKudos} currentUserId="user-3" lang="vi" />);
 		// Gallery images are wrapped in links with target="_blank"
 		const galleryLinks = screen
 			.getAllByRole("link")
