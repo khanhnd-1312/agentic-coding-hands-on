@@ -115,6 +115,7 @@ export async function GET(request: NextRequest) {
 				// Check if current user liked this kudos
 				const hearts = (k.kudos_hearts as Array<{ user_id: string }>) ?? [];
 				const isLikedByMe = userId ? hearts.some((h) => h.user_id === userId) : false;
+				const isMyKudo = userId ? (k.sender_id as string) === userId : false;
 
 				return {
 					id: k.id as string,
@@ -142,6 +143,7 @@ export async function GET(request: NextRequest) {
 					},
 					hashtags: kudosHashtags as Array<{ id: string; name: string }>,
 					is_liked_by_me: isLikedByMe,
+					is_my_kudo: isMyKudo,
 				};
 			}),
 		);

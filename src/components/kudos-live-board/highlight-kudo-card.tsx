@@ -33,7 +33,7 @@ export function HighlightKudoCard({
 	onHashtagClick,
 }: HighlightKudoCardProps) {
 	const t = kudosLiveBoardDictionary[lang].highlight;
-	const isSender = currentUserId === kudos.sender_id;
+	const isSender = kudos.is_my_kudo;
 
 	// Title field is the danh hiệu / category label (e.g., "IDOL GIỚI TRẺ")
 	// All hashtags show below content — no splitting needed

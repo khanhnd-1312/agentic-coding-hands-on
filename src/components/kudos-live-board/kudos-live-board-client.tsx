@@ -14,6 +14,7 @@ import { HighlightSection } from "./highlight-section";
 import { SpotlightSection } from "./spotlight-section";
 import { AllKudosSection } from "./all-kudos-section";
 import { KudosSidebar } from "./kudos-sidebar";
+import { KudoLikeProvider } from "@/contexts/kudo-like-context";
 import { kudosLiveBoardDictionary } from "@/i18n/kudos-live-board";
 import type {
 	Kudos,
@@ -121,7 +122,10 @@ export function KudosLiveBoardClient({
 		setSelectedHashtag((prev) => (prev === hashtagId ? null : hashtagId));
 	}, []);
 
+	const allInitialKudos = [...initialHighlights, ...initialKudos];
+
 	return (
+		<KudoLikeProvider initialKudos={allInitialKudos}>
 		<>
 		<div className="flex flex-col">
 			{/* Hero Banner — search bar rendered inside on the background */}
@@ -188,5 +192,6 @@ export function KudosLiveBoardClient({
 				/>
 			)}
 		</>
+		</KudoLikeProvider>
 	);
 }

@@ -32,7 +32,7 @@ export function KudoPostCard({
 	lang = "vi",
 	onHashtagClick,
 }: KudoPostCardProps) {
-	const isSender = currentUserId === kudos.sender_id;
+	const isSender = kudos.is_my_kudo;
 
 	return (
 		<article className="bg-[var(--klb-color-bg-card)] rounded-lg p-6 flex flex-col gap-4">

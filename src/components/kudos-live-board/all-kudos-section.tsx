@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, type ReactNode } from "react";
 import { KudoPostCard } from "./kudo-post-card";
 import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
+import { useKudoLikeContext } from "@/contexts/kudo-like-context";
 import { kudosLiveBoardDictionary } from "@/i18n/kudos-live-board";
 import type { Kudos, KudosListResponse } from "@/types/kudos";
 import type { LanguagePreference } from "@/types/login";
@@ -50,6 +51,13 @@ export function AllKudosSection({
 			initialData: initialKudos,
 			initialHasMore,
 		});
+
+	const { registerKudos } = useKudoLikeContext();
+
+	// Register newly loaded kudos into the like context (won't overwrite in-flight state)
+	useEffect(() => {
+		registerKudos(items);
+	}, [items, registerKudos]);
 
 	// Reset and re-fetch page 1 when filters change
 	const isFirstMount = useRef(true);

@@ -62,8 +62,25 @@ export const KudosSchema = z.object({
 	}),
 	hashtags: z.array(HashtagSchema),
 	is_liked_by_me: z.boolean(),
+	is_my_kudo: z.boolean(),
 });
 export type Kudos = z.infer<typeof KudosSchema>;
+
+/* ─── Like / Unlike API Response Schemas ────────────────────────── */
+
+export const LikeResponseSchema = z.object({
+	kudo_id: zUuid(),
+	heart_count: z.number().int(),
+	tim_awarded: z.number().int(),
+});
+export type LikeResponse = z.infer<typeof LikeResponseSchema>;
+
+export const UnlikeResponseSchema = z.object({
+	kudo_id: zUuid(),
+	heart_count: z.number().int(),
+	tim_revoked: z.number().int(),
+});
+export type UnlikeResponse = z.infer<typeof UnlikeResponseSchema>;
 
 /* ─── Heart / Like ───────────────────────────────────────────────── */
 

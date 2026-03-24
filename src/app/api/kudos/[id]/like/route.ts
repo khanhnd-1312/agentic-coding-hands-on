@@ -82,10 +82,17 @@ export async function POST(_request: NextRequest, context: RouteContext) {
 		points: timPoints,
 	});
 
+	// Re-fetch updated heart_count after increment
+	const { data: updatedKudos } = await supabase
+		.from("kudos")
+		.select("heart_count")
+		.eq("id", kudosId)
+		.single();
+
 	return NextResponse.json(
 		{
-			liked: true,
-			is_special_day: isSpecialDay,
+			kudo_id: kudosId,
+			heart_count: updatedKudos?.heart_count ?? 0,
 			tim_awarded: timPoints,
 		},
 		{ status: 201 },
@@ -123,10 +130,10 @@ export async function DELETE(_request: NextRequest, context: RouteContext) {
 		);
 	}
 
-	// Fetch kudos sender for tim revocation
+	// Fetch kudos sender and current heart_count for response
 	const { data: kudos } = await supabase
 		.from("kudos")
-		.select("sender_id")
+		.select("sender_id, heart_count")
 		.eq("id", kudosId)
 		.single();
 
@@ -160,7 +167,8 @@ export async function DELETE(_request: NextRequest, context: RouteContext) {
 	});
 
 	return NextResponse.json({
-		liked: false,
+		kudo_id: kudosId,
+		heart_count: (kudos.heart_count ?? 1) - 1,
 		tim_revoked: timToRevoke,
 	});
 }
