@@ -3,7 +3,7 @@
 **Project**: Agentic Coding Hands-on (SAA 2025)
 **Figma File Key**: `9ypp4enmFmdK3YAFJLIu6C`
 **Figma URL**: https://www.figma.com/design/9ypp4enmFmdK3YAFJLIu6C/SAA-2025---Internal-Live-Coding
-**Last Updated**: 2026-03-17
+**Last Updated**: 2026-03-24
 
 ---
 
@@ -12,7 +12,7 @@
 | Metric | Value |
 |--------|-------|
 | Total Frames | 17 |
-| Fully Specified | 7 (Login, Homepage SAA, Hệ thống giải, Countdown - Prelaunch, Dropdown-ngôn ngữ, Sun* Kudos - Live board, Viết Kudo) |
+| Fully Specified | 8 (Login, Homepage SAA, Hệ thống giải, Countdown - Prelaunch, Dropdown-ngôn ngữ, Sun* Kudos - Live board, Viết Kudo, Like Kudos) |
 | In Progress | 0 |
 | Remaining | 10 |
 | Completion | 41% |
@@ -28,6 +28,7 @@
 | Countdown - Prelaunch page | `2268:35127` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/2268:35127) | ✅ spec | `specs/2268-35127-Countdown-Prelaunch-page/` | `GET /countdown` | → Login |
 | Viết Kudo | `520:11602` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/520:11602) | ✅ spec | `specs/520-11602-Viet-Kudo/` | `POST /kudos`, `GET /sunners/search`, `POST /media/upload` | ← Homepage, ← Live board, → Addlink Box, → Dropdown Phòng ban, → Dropdown list hashtag |
 | Sun* Kudos - Live board | `2940:13431` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/2940:13431) | ✅ spec | `specs/2940-13431-sun-kudos-live-board/` | `GET /kudos/live`, `GET /kudos/highlight`, `GET /kudos/spotlight`, `GET /kudos/stats`, `GET /secretbox/stats`, `GET /sunners/recent-gifts` | ← Homepage, ← Hệ thống giải, → Dropdown list hashtag, → Dropdown Phòng ban, → Open secret box, → Viết Kudo |
+| Like Kudos (interaction) | `256:5231` (KUDO), `335:9620` (Highlight), `520:18779` (View Kudo) | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/256:5231) | ✅ spec | `specs/256-5231-like-kudos/` | `POST /kudos/{id}/like`, `DELETE /kudos/{id}/like` | Embedded in Live Board feed, Highlight carousel, Detail modal |
 | Hệ thống giải | `313:8436` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/313:8436) | ✅ spec | `specs/313-8436-He-thong-giai/` | `GET /awards` | ← Homepage, → Sun* Kudos |
 | Open secret box- chưa mở | `1466:7676` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/1466:7676) | pending | - | `POST /secretbox/open` | ← Homepage |
 | Addlink Box | `1002:12917` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/1002:12917) | pending | - | `POST /links` | ← Viết Kudo |
@@ -439,6 +440,7 @@ flowchart LR
 | 2026-03-13 | Spec created | Dropdown-ngôn ngữ `721:4942` — language selector dropdown (VN/EN) with flag icons, selected state highlight, client-side i18n, shared header overlay component |
 | 2026-03-13 | Spec created | Sun* Kudos - Live board `2940:13431` — full-page Kudos live board with 5 sections: (A) Hero Banner with KV Kudos + write-kudo input, (B) Highlight Kudos carousel (top 5 by hearts) with hashtag/department filters + Spotlight word cloud board with search + pan/zoom, (C) All Kudos feed with sender/receiver cards, hearts, copy-link, attached images, (D) Stats sidebar with kudos sent/received/hearts/secret-box counts, "Mở quà" CTA, and 10 recent gift recipients list |
 | 2026-03-13 | Frames updated | Total frames updated from 14 to 17 (added Floating Action Button, Floating Action Button 2, Thể lệ UPDATE) |
+| 2026-03-24 | Spec created | Like Kudos — interaction feature on KUDO cards (`256:5231`, `335:9620`, `520:18779`): heart toggle (grey↔red), optimistic UI, +1/+2 tim points to sender, self-like prevention, debounce 300ms, special day double-points, 5 user stories |
 | 2026-03-17 | Spec created | Viết Kudo `520:11602` — modal/overlay kudo compose form with: (Left) sender profile cover card with avatar, name, badge, level, stars, 7 danh hiệu badges, "Xem trang cá nhân" link over Keyvisual background; (Right) form with receiver search (autocomplete), department dropdown, rich text editor (bold/italic/strikethrough/numbered-list/link/quote/emoji/title), hashtag picker, image attachments (up to 5 with remove), anonymous toggle checkbox, cancel/send actions |
 
 ---
