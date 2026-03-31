@@ -1,4 +1,4 @@
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/libs/supabase/server";
 import { Header } from "@/components/homepage/header";
@@ -40,7 +40,10 @@ export default async function KudoLivePage() {
 	}
 
 	const currentUserId = user?.id ?? "";
-	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+	const headerStore = await headers();
+	const host = headerStore.get("x-forwarded-host") ?? headerStore.get("host") ?? "localhost:3000";
+	const protocol = headerStore.get("x-forwarded-proto") ?? "https";
+	const baseUrl = `${protocol}://${host}`;
 	const cookieHeader = cookieStore.toString();
 
 	// Fetch data via API routes, forwarding auth cookies

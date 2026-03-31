@@ -20,7 +20,7 @@ export function LoginButton({ lang, error, onError }: LoginButtonProps) {
 	const [isLoading, setIsLoading] = useState(false);
 
 	async function handleClick() {
-		const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? window.location.origin;
+		const siteUrl = window.location.origin;
 
 		setIsLoading(true);
 		onError(null);

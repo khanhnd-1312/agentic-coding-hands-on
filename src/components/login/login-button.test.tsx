@@ -12,8 +12,6 @@ describe("LoginButton", () => {
 
 	beforeEach(() => {
 		vi.clearAllMocks();
-		// Required runtime guard env var
-		process.env.NEXT_PUBLIC_SITE_URL = "http://localhost:3000";
 	});
 
 	it("renders label and Google icon in default state", () => {
