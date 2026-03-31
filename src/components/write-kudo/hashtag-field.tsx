@@ -71,11 +71,11 @@ export function HashtagField({
 
   const selectedIds = new Set(selectedHashtags.map((h) => h.id));
 
-  const filteredHashtags = allHashtags.filter(
-    (h) =>
-      !selectedIds.has(h.id) &&
-      h.name.toLowerCase().includes(filter.toLowerCase())
+  // Show ALL hashtags (selected + unselected) matching filter — per Figma, selected items stay visible with check icon
+  const visibleHashtags = allHashtags.filter((h) =>
+    h.name.toLowerCase().includes(filter.toLowerCase())
   );
+  const unselectedVisible = visibleHashtags.filter((h) => !selectedIds.has(h.id));
 
   const exactMatch = allHashtags.some(
     (h) => h.name.toLowerCase() === filter.trim().toLowerCase()
@@ -126,8 +126,9 @@ export function HashtagField({
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      if (filteredHashtags.length > 0) {
-        selectHashtag(filteredHashtags[0]);
+      const firstUnselected = visibleHashtags.find((h) => !selectedIds.has(h.id));
+      if (firstUnselected) {
+        selectHashtag(firstUnselected);
       } else if (filter.trim() && !exactMatch) {
         createAndSelect();
       }
@@ -175,8 +176,8 @@ export function HashtagField({
             </button>
 
             {isOpen && (
-              <div className="absolute left-0 top-full z-50 mt-1 w-64 rounded border border-[#998C5F] bg-white shadow-lg">
-                <div className="border-b border-[#998C5F] p-2">
+              <div className="absolute left-0 top-full z-50 mt-1 w-79.5 max-md:w-full rounded-lg border border-[#998C5F] bg-[#00070C] p-1.5 shadow-lg">
+                <div className="border-b border-[#998C5F] p-2 bg-[#00070C]">
                   <input
                     ref={inputRef}
                     type="text"
@@ -184,36 +185,47 @@ export function HashtagField({
                     onChange={(e) => setFilter(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder="Tìm hoặc tạo hashtag..."
-                    className="w-full border-none bg-transparent px-1 py-1 text-sm text-[#00101A] outline-none placeholder:text-[#999]"
+                    className="w-full border-none bg-transparent px-1 py-1 text-base font-bold text-white outline-none placeholder:text-[#999]"
                   />
                 </div>
-                <ul className="max-h-48 overflow-y-auto">
+                <ul role="listbox" aria-multiselectable="true" aria-label="Chọn hashtag" className="max-h-80 overflow-y-auto">
                   {isLoading && (
-                    <li className="px-3 py-2 text-sm text-[#999]">
+                    <li className="px-4 h-10 flex items-center text-base font-bold text-white/50">
                       Đang tải...
                     </li>
                   )}
                   {!isLoading &&
-                    filteredHashtags.map((hashtag) => (
-                      <li key={hashtag.id}>
-                        <button
-                          type="button"
-                          onClick={() => selectHashtag(hashtag)}
-                          className="w-full px-3 py-2 text-left text-sm text-[#00101A] hover:bg-gray-100"
-                        >
-                          {hashtag.name}
-                        </button>
-                      </li>
-                    ))}
+                    visibleHashtags.map((hashtag) => {
+                      const isSelected = selectedIds.has(hashtag.id);
+                      const isDisabled = !isSelected && selectedHashtags.length >= MAX_HASHTAGS;
+                      return (
+                        <li key={hashtag.id} role="option" aria-selected={isSelected}>
+                          <button
+                            type="button"
+                            onClick={() => isSelected ? removeHashtag(hashtag.id) : selectHashtag(hashtag)}
+                            disabled={isDisabled}
+                            className={[
+                              "w-full h-10 px-4 flex items-center justify-between text-left text-base font-bold leading-6 tracking-[0.15px] text-white transition-colors duration-150",
+                              "focus-visible:outline-2 focus-visible:outline-[#15D5CA] focus-visible:-outline-offset-2",
+                              isSelected ? "bg-[rgba(255,234,158,0.2)] rounded-sm" : "hover:bg-[rgba(255,234,158,0.1)]",
+                              isDisabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer",
+                            ].filter(Boolean).join(" ")}
+                          >
+                            <span className="truncate">{hashtag.name}</span>
+                            {isSelected && <Icon name="check-circle" size={24} className="text-white shrink-0" />}
+                          </button>
+                        </li>
+                      );
+                    })}
                   {!isLoading &&
                     filter.trim() &&
                     !exactMatch &&
-                    filteredHashtags.length === 0 && (
+                    unselectedVisible.length === 0 && (
                       <li>
                         <button
                           type="button"
                           onClick={createAndSelect}
-                          className="w-full px-3 py-2 text-left text-sm text-[#998C5F] hover:bg-gray-100"
+                          className="w-full h-10 px-4 flex items-center text-left text-base font-bold text-[#998C5F] hover:bg-[rgba(255,234,158,0.1)] transition-colors duration-150"
                         >
                           + Tạo &ldquo;{filter.trim()}&rdquo;
                         </button>
@@ -222,17 +234,22 @@ export function HashtagField({
                   {!isLoading &&
                     filter.trim() &&
                     !exactMatch &&
-                    filteredHashtags.length > 0 && (
-                      <li className="border-t border-gray-100">
+                    unselectedVisible.length > 0 && (
+                      <li className="border-t border-[#998C5F]/20">
                         <button
                           type="button"
                           onClick={createAndSelect}
-                          className="w-full px-3 py-2 text-left text-sm text-[#998C5F] hover:bg-gray-100"
+                          className="w-full h-10 px-4 flex items-center text-left text-base font-bold text-[#998C5F] hover:bg-[rgba(255,234,158,0.1)] transition-colors duration-150"
                         >
                           + Tạo &ldquo;{filter.trim()}&rdquo;
                         </button>
                       </li>
                     )}
+                  {!isLoading && visibleHashtags.length === 0 && !filter.trim() && (
+                    <li className="px-4 h-10 flex items-center text-base font-bold text-white/50">
+                      Không có dữ liệu
+                    </li>
+                  )}
                 </ul>
               </div>
             )}
