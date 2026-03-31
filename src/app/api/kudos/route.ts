@@ -29,6 +29,8 @@ export async function GET(request: NextRequest) {
 		const { supabase, userId } = auth;
 
 		// Build query for kudos with sender/receiver joins
+		// When filtering by hashtag, use !inner join so kudos without matching hashtag are excluded
+		const hashtagJoin = hashtag ? "kudos_hashtags!inner" : "kudos_hashtags";
 		let query = supabase
 			.from("kudos")
 			.select(
@@ -44,7 +46,7 @@ export async function GET(request: NextRequest) {
 				created_at,
 				sender:profiles!kudos_sender_id_fkey(id, name, avatar_url, department_id, kudos_received_count),
 				receiver:profiles!kudos_receiver_id_fkey(id, name, avatar_url, department_id, kudos_received_count),
-				kudos_hashtags(hashtag:hashtags(id, name)),
+				${hashtagJoin}(hashtag:hashtags(id, name)),
 				kudos_hearts(user_id)
 			`,
 				{ count: "exact" },
@@ -57,10 +59,28 @@ export async function GET(request: NextRequest) {
 			query = query.eq("kudos_hashtags.hashtag_id", hashtag);
 		}
 
-		// Filter by department (sender OR receiver)
+		// Filter by department (sender OR receiver belongs to department)
 		if (department) {
+			const { data: deptProfiles } = await supabase
+				.from("profiles")
+				.select("id")
+				.eq("department_id", department);
+
+			const profileIds = (deptProfiles ?? []).map((p) => p.id);
+
+			if (profileIds.length === 0) {
+				// No users in this department — return empty result
+				return NextResponse.json({
+					data: [],
+					page,
+					limit,
+					total: 0,
+					has_more: false,
+				} satisfies KudosListResponse);
+			}
+
 			query = query.or(
-				`sender_id.in.(select id from profiles where department_id=eq.${department}),receiver_id.in.(select id from profiles where department_id=eq.${department})`,
+				`sender_id.in.(${profileIds.join(",")}),receiver_id.in.(${profileIds.join(",")})`,
 			);
 		}
 

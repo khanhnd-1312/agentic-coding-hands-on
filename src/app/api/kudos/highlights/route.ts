@@ -22,6 +22,8 @@ export async function GET(request: NextRequest) {
 	const { supabase, userId } = auth;
 
 	// Fetch top 5 kudos by heart_count
+	// When filtering by hashtag, use !inner join so kudos without matching hashtag are excluded
+	const hashtagJoin = parsed.data.hashtag ? "kudos_hashtags!inner" : "kudos_hashtags";
 	let query = supabase
 		.from("kudos")
 		.select(
@@ -37,7 +39,7 @@ export async function GET(request: NextRequest) {
 			created_at,
 			sender:profiles!kudos_sender_id_fkey(id, name, avatar_url, department_id, kudos_received_count),
 			receiver:profiles!kudos_receiver_id_fkey(id, name, avatar_url, department_id, kudos_received_count),
-			kudos_hashtags(hashtag:hashtags(id, name)),
+			${hashtagJoin}(hashtag:hashtags(id, name)),
 			kudos_hearts!left(user_id)
 		`,
 		)
@@ -47,6 +49,24 @@ export async function GET(request: NextRequest) {
 	// Apply optional filters (same as main kudos feed)
 	if (parsed.data.hashtag) {
 		query = query.eq("kudos_hashtags.hashtag_id", parsed.data.hashtag);
+	}
+
+	// Filter by department (sender OR receiver belongs to department)
+	if (parsed.data.department) {
+		const { data: deptProfiles } = await supabase
+			.from("profiles")
+			.select("id")
+			.eq("department_id", parsed.data.department);
+
+		const profileIds = (deptProfiles ?? []).map((p) => p.id);
+
+		if (profileIds.length === 0) {
+			return NextResponse.json({ data: [] });
+		}
+
+		query = query.or(
+			`sender_id.in.(${profileIds.join(",")}),receiver_id.in.(${profileIds.join(",")})`,
+		);
 	}
 
 	const { data: kudosList, error } = await query;
