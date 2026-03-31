@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 
-export const DEFAULT_EVENT_DATE = "2025-11-15T18:30:00+07:00";
+export const EVENT_DATETIME = "2026-11-15T18:30:00+07:00";
 
 export interface TimeLeft {
 	days: string;
@@ -38,7 +38,7 @@ export function calcTimeLeft(targetDate: Date, nowMs: number = Date.now()): Time
 
 export function useCountdown(targetDate?: Date): TimeLeft {
 	const resolvedTarget =
-		targetDate ?? new Date(DEFAULT_EVENT_DATE);
+		targetDate ?? new Date(EVENT_DATETIME);
 
 	const [timeLeft, setTimeLeft] = useState<TimeLeft>(() =>
 		calcTimeLeft(resolvedTarget)

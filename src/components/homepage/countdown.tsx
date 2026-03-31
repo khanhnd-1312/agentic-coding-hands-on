@@ -1,6 +1,6 @@
 "use client";
 
-import { useCountdown, DEFAULT_EVENT_DATE } from "@/hooks/use-countdown";
+import { useCountdown, EVENT_DATETIME } from "@/hooks/use-countdown";
 import { homepageDictionary } from "@/i18n/homepage";
 import type { LanguagePreference } from "@/types/login";
 
@@ -44,10 +44,7 @@ interface CountdownProps {
 }
 
 export function Countdown({ lang = "vi" }: CountdownProps) {
-	const eventDateEnv = process.env.NEXT_PUBLIC_EVENT_DATETIME;
-	const targetDate = eventDateEnv
-		? new Date(eventDateEnv)
-		: new Date(DEFAULT_EVENT_DATE);
+	const targetDate = new Date(EVENT_DATETIME);
 
 	const { days, hours, minutes, isEventStarted } = useCountdown(targetDate);
 	const t = homepageDictionary[lang].countdown;

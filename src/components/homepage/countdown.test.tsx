@@ -9,7 +9,7 @@ vi.mock("../../hooks/use-countdown", () => ({
 		minutes: "47",
 		isEventStarted: false,
 	})),
-	DEFAULT_EVENT_DATE: "2025-11-15T18:30:00+07:00",
+	EVENT_DATETIME: "2026-11-15T18:30:00+07:00",
 	calcTimeLeft: vi.fn(),
 }));
 
