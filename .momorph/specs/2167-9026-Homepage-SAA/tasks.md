@@ -54,10 +54,10 @@
 
 **Independent Test**: `yarn test src/hooks/use-countdown.test.ts src/components/homepage/countdown.test.tsx` — all pass
 
-- [x] T012 [US2] Write failing tests for useCountdown hook: `calcTimeLeft` returns correct `{days,hours,minutes}` with zero-padding; `isEventStarted` true when `now >= targetDate`; auto-update via `vi.useFakeTimers()`; env var missing → uses `DEFAULT_EVENT_DATE` fallback | src/hooks/use-countdown.test.ts
-- [x] T013 [US2] Implement src/hooks/use-countdown.ts: `DEFAULT_EVENT_DATE = "2025-11-15T18:30:00+07:00"`; accepts `targetDate: Date`; uses `Date.now()` at each tick (no cumulative drift); clears interval on unmount | src/hooks/use-countdown.ts
+- [x] T012 [US2] Write failing tests for useCountdown hook: `calcTimeLeft` returns correct `{days,hours,minutes}` with zero-padding; `isEventStarted` true when `now >= targetDate`; auto-update via `vi.useFakeTimers()`; no targetDate → uses `EVENT_DATETIME` fallback | src/hooks/use-countdown.test.ts
+- [x] T013 [US2] Implement src/hooks/use-countdown.ts: `EVENT_DATETIME = "2026-11-15T18:30:00+07:00"`; accepts `targetDate: Date`; uses `Date.now()` at each tick (no cumulative drift); clears interval on unmount | src/hooks/use-countdown.ts
 - [x] T014 [US2] Write failing tests for Countdown component: renders 3 tiles (DAYS/HOURS/MINUTES) with correct digit values; "Coming soon" visible when `isEventStarted=false`, hidden when `true`; root element has `aria-live="polite"` and `aria-label` | src/components/homepage/countdown.test.tsx
-- [x] T015 [US2] Implement src/components/homepage/countdown.tsx (`"use client"`): reads `process.env.NEXT_PUBLIC_EVENT_DATETIME ?? DEFAULT_EVENT_DATE`; renders `<CountdownTile>` ×3; digit boxes use `Digital Numbers` font 49px; `aria-live="polite"` on root | src/components/homepage/countdown.tsx
+- [x] T015 [US2] Implement src/components/homepage/countdown.tsx (`"use client"`): uses `EVENT_DATETIME` constant; renders `<CountdownTile>` ×3; digit boxes use `Digital Numbers` font 49px; `aria-live="polite"` on root | src/components/homepage/countdown.tsx
 
 **Checkpoint**: Countdown runs independently — `yarn test` passes, component renders correctly at localhost
 

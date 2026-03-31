@@ -161,7 +161,7 @@ The homepage adapts to mobile (360px), tablet (768px), and desktop (1440px) view
 ### Edge Cases
 
 - **Countdown reaches zero while user is on the page**: "Coming soon" label disappears in real-time; digits freeze at "00" without a page reload.
-- **Event target date not configured**: Countdown env var `NEXT_PUBLIC_EVENT_DATETIME` is missing → fall back to a default date or show a placeholder.
+- **Event target date not configured**: If `EVENT_DATETIME` constant needs updating, change it in `src/hooks/use-countdown.ts`.
 - **Award images fail to load**: Show a placeholder/skeleton so layout doesn't break.
 - **Long award descriptions**: Truncate at 2 lines with `line-clamp-2` and ellipsis.
 - **Unauthenticated access**: Middleware (`src/middleware.ts`) redirects to `/login` before the page renders.
@@ -230,7 +230,7 @@ See `design-style.md` for full visual specifications.
 
 | Component | State | Type | Initial Value | Description |
 |-----------|-------|------|---------------|-------------|
-| `<Countdown>` | `timeLeft` | `{ days, hours, minutes }` | computed from `NEXT_PUBLIC_EVENT_DATETIME` | Updated every 60s via `setInterval` |
+| `<Countdown>` | `timeLeft` | `{ days, hours, minutes }` | computed from `EVENT_DATETIME` constant | Updated every 60s via `setInterval` |
 | `<Countdown>` | `isEventStarted` | `boolean` | `false` | True when target datetime has passed; hides "Coming soon" |
 | `<Header>` | `isProfileOpen` | `boolean` | `false` | Controls profile dropdown visibility |
 | `<Header>` | `isLangOpen` | `boolean` | `false` | Controls language dropdown visibility |
@@ -271,7 +271,7 @@ See `design-style.md` for full visual specifications.
 
 ### Functional Requirements
 
-- **FR-001**: System MUST display a real-time countdown to the SAA event date configured via environment variable `NEXT_PUBLIC_EVENT_DATETIME` (ISO-8601 format).
+- **FR-001**: System MUST display a real-time countdown to the SAA event date defined by the `EVENT_DATETIME` constant in `src/hooks/use-countdown.ts` (ISO-8601 format).
 - **FR-002**: System MUST hide the "Coming soon" subtitle and freeze countdown at "00" when the event datetime has passed.
 - **FR-003**: System MUST display all 6 award categories as clickable cards that navigate to `/awards-information#[slug]`.
 - **FR-004**: System MUST restrict the homepage to authenticated users — unauthenticated users are redirected to `/login`.
@@ -285,7 +285,7 @@ See `design-style.md` for full visual specifications.
 ### Technical Requirements
 
 - **TR-001**: Countdown MUST update every 60 seconds using `setInterval` on the client. No server re-rendering required for tick updates.
-- **TR-002**: The event target datetime MUST be read from `NEXT_PUBLIC_EVENT_DATETIME` env var. Missing var → fall back to a hardcoded default.
+- **TR-002**: The event target datetime MUST be read from the `EVENT_DATETIME` constant exported by `src/hooks/use-countdown.ts`.
 - **TR-003**: Award category data MUST be fetched from backend API (`GET /api/awards`) on the server side (RSC) for SEO.
 - **TR-004**: The `Digital Numbers` and `SVN-Gotham` fonts MUST be self-hosted under `public/fonts/` (neither is available on Google Fonts).
 - **TR-005**: Performance — Largest Contentful Paint (LCP) < 2.5s on 3G. Hero images use `priority` prop with `next/image`.
@@ -343,7 +343,7 @@ See `design-style.md` for full visual specifications.
 
 ## Notes
 
-- The event target datetime for the countdown should be configurable via `NEXT_PUBLIC_EVENT_DATETIME` (e.g., `2025-11-15T18:30:00+07:00`).
+- The event target datetime for the countdown is defined as the `EVENT_DATETIME` constant in `src/hooks/use-countdown.ts` (e.g., `"2026-11-15T18:30:00+07:00"`).
 - **"About SAA 2025" nav link**: The "About SAA 2025" entry in both header and footer nav links to `/` (Homepage). If the user is **already on the Homepage**, clicking the link has no action (the link is in active/selected state and no navigation occurs — Next.js `<Link href="/">` on the current route is a no-op). If the user is on **any other page**, clicking navigates them back to `/`.
 - **Facebook group sub-note in B2**: The text "Tường thuật trực tiếp tại Group Facebook Sun* Family" is a **static `<p>` tag** — not a clickable link. No `href` required.
 - **B4 ROOT FURTHER description**: This long-form body text **MUST support both Vietnamese and English** — it switches language when the user selects VI/EN from the language selector in the header (same as all other page text). Translations must be provided for both locales.

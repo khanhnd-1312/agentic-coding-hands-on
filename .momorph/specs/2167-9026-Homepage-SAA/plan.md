@@ -56,7 +56,7 @@ Replace the Next.js boilerplate `src/app/page.tsx` with the full **Homepage SAA*
 - **Language i18n**: Dictionary-based per component (following Login pattern), driven by `lang` cookie read in the RSC page then passed as prop. New shared `src/i18n/homepage.ts` dictionary.
 - **Client Islands** (minimal `"use client"` surface):
   - `<Header>` — dropdown state for profile/language selectors + `usePathname()` for active nav link detection
-  - `<Countdown>` — `setInterval` every 60 seconds; reads `NEXT_PUBLIC_EVENT_DATETIME` env var
+  - `<Countdown>` — `setInterval` every 60 seconds; uses `EVENT_DATETIME` constant
   - `<WidgetButton>` — toggle open/close state for quick-action menu (P3; menu content TBD by product)
 - **Notification count**: fetched client-side inside `<Header>` via `useEffect` + `fetch('/api/notifications')` on mount; badge hidden while loading/error (non-critical, per spec)
 
@@ -220,11 +220,11 @@ public/
    - When `now >= targetDate`, returns `{ days: "00", hours: "00", minutes: "00" }` and `isEventStarted: true`
    - Auto-update fires every 60s (`vi.useFakeTimers()`)
 2. **Green**: Implement `src/hooks/use-countdown.ts`
-   - Accepts `targetDate: Date` — caller passes parsed `new Date(process.env.NEXT_PUBLIC_EVENT_DATETIME ?? DEFAULT_EVENT_DATE)`
-   - `DEFAULT_EVENT_DATE = "2025-11-15T18:30:00+07:00"` — hardcoded fallback constant
+   - Accepts `targetDate: Date` — caller passes parsed `new Date(EVENT_DATETIME)`
+   - `EVENT_DATETIME = "2026-11-15T18:30:00+07:00"` — shared constant
 3. **Red**: Write `countdown.test.tsx` — digit rendering, "Coming soon" hidden/visible, zero state, `aria-live` present
 4. **Green**: Implement `src/components/homepage/countdown.tsx` (client component)
-   - Reads `NEXT_PUBLIC_EVENT_DATETIME` env var; falls back to `DEFAULT_EVENT_DATE` when undefined
+   - Uses `EVENT_DATETIME` constant directly (no env var needed)
 
 ### Phase 3: Static Layout Sections — US1 (P1, TDD)
 
@@ -318,7 +318,7 @@ public/
 | `mix-blend-mode: screen` visual regression | Low | Low | Verify against Figma reference during implementation; requires dark `#00101A` background |
 | Montserrat 400 not loaded → fallback fonts on award cards | Low | Medium | Add weight `"400"` to layout.tsx in Phase 1 before any component is rendered |
 | Countdown drift > 5s over 1 hour | Low | Low | Use `Date.now()` at each tick rather than subtracting fixed 60s intervals |
-| `NEXT_PUBLIC_EVENT_DATETIME` not set in env | Medium | Medium | `DEFAULT_EVENT_DATE = "2025-11-15T18:30:00+07:00"` constant fallback in `use-countdown.ts`; test both paths |
+| `EVENT_DATETIME` has past date | Medium | Medium | `EVENT_DATETIME = "2026-11-15T18:30:00+07:00"` constant in `use-countdown.ts`; update when event date changes |
 | Widget button quick-action menu content undefined | High | Low | P3 story — render pill button with correct styling; menu items left as placeholder (`// TODO(product): define menu actions`) |
 
 ---

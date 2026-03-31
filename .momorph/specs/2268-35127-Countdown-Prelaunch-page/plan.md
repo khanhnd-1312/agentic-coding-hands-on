@@ -55,7 +55,7 @@ Build a standalone full-screen countdown page at `/countdown` that displays a re
 | Existing Asset | Reuse? | Rationale |
 |---------------|--------|-----------|
 | `calcTimeLeft()` from `use-countdown.ts` | **Yes — import directly** | Pure function, already tested, computes days/hours/minutes |
-| `useCountdown()` hook | **No — create new hook** | Existing hook ticks every 60s (spec requires every 1s), uses hardcoded `DEFAULT_EVENT_DATE` (spec requires server-driven time), lacks `isLoading`/`hasError` states, no redirect logic |
+| `useCountdown()` hook | **No — create new hook** | Existing hook ticks every 60s (spec requires every 1s), uses hardcoded `EVENT_DATETIME` constant (spec requires server-driven time), lacks `isLoading`/`hasError` states, no redirect logic |
 | `DigitBox` / `CountdownTile` components | **No — create new** | Prelaunch design has different dimensions (77x123 vs 51x82), different gaps (21px vs 14px), different font size (73.73px vs 49px), different border-radius (12px vs 8px) |
 | `HeroSection` background pattern | **Reference only** | Same z-index layering pattern (Image z-0, gradient z-1, content z-2) but different gradient angle (18deg vs 12deg) |
 | CSS variables in `globals.css` | **Extend** | Add prelaunch-specific tokens alongside existing ones |
@@ -65,20 +65,18 @@ Build a standalone full-screen countdown page at `/countdown` that displays a re
 ### Data Flow (Server → Client)
 
 The **Server Component** (`page.tsx`) provides initial data — no API call needed for the initial render:
-1. Server Component reads `NEXT_PUBLIC_EVENT_DATETIME` env var
+1. Server Component imports `EVENT_DATETIME` constant from `@/hooks/use-countdown`
 2. Computes `serverTime = new Date().toISOString()` at request time
 3. Passes both as props to the Client Component
 4. Client Component uses the server-provided delta for countdown ticking
 
-> **Why no API route?** The Server Component already runs at request time and can provide fresh `serverTime`. An API route would add an unnecessary client-side fetch hop. The `NEXT_PUBLIC_*` env var is available on both server and client, but we intentionally read it server-side only to maintain a single source of truth.
+> **Why no API route?** The Server Component already runs at request time and can provide fresh `serverTime`. An API route would add an unnecessary client-side fetch hop. The event datetime is a shared constant, read server-side to maintain a single source of truth.
 
 > **Important**: `page.tsx` MUST use `export const dynamic = "force-dynamic"` to prevent static generation (otherwise `serverTime` would be stale from build time).
 
-**Edge case — event time not configured**: If `NEXT_PUBLIC_EVENT_DATETIME` is unset, the Server Component MUST treat this as "event already started" and `redirect("/login")`. A warning MUST be logged server-side via `console.warn` (this is infra logging, not production app code — acceptable per constitution).
-
 ### Integration Points
 
-- **Environment variable**: `NEXT_PUBLIC_EVENT_DATETIME` (already exists for homepage countdown)
+- **Constant**: `EVENT_DATETIME` from `src/hooks/use-countdown.ts` (shared with homepage countdown)
 - **Redirect target**: `/login` route (already exists)
 - **i18n**: Create `src/i18n/countdown-prelaunch.ts` (separate file — avoids bloating homepage dictionary with unrelated page content)
 
@@ -234,10 +232,9 @@ public/
    export const dynamic = "force-dynamic"; // prevent static generation
    export const metadata: Metadata = { title: "Countdown | Sun Annual Awards 2025" };
    ```
-   - Read `NEXT_PUBLIC_EVENT_DATETIME` env var
-   - Validate date is parseable. If missing or invalid → `redirect("/login")` + `console.warn`
+   - Import `EVENT_DATETIME` constant from `@/hooks/use-countdown`
    - If event already started → `redirect("/login")`
-   - Otherwise render `<CountdownPrelaunchPage eventStartTime={eventTime} serverTime={new Date().toISOString()} />`
+   - Otherwise render `<CountdownPrelaunchPage eventStartTime={EVENT_DATETIME} serverTime={new Date().toISOString()} />`
 
 ### Phase 3: Redirect Logic (US2: Redirect When Countdown Reaches Zero)
 
@@ -245,8 +242,9 @@ public/
 
 **Path A — Server-side (already started):** In `page.tsx`, before rendering:
 ```typescript
-const eventTime = process.env.NEXT_PUBLIC_EVENT_DATETIME;
-if (!eventTime || new Date(eventTime).getTime() <= Date.now()) {
+import { EVENT_DATETIME } from "@/hooks/use-countdown";
+const eventDate = new Date(EVENT_DATETIME);
+if (eventDate.getTime() <= Date.now()) {
   redirect("/login");
 }
 ```
@@ -290,7 +288,7 @@ if (!eventTime || new Date(eventTime).getTime() <= Date.now()) {
    - Background image: `alt=""` + `aria-hidden="true"`
 2. **Keyboard navigation**: Ensure page is navigable with Tab (nothing interactive beyond browser chrome, but verify no focus traps)
 3. **Edge case hardening**:
-   - Invalid `NEXT_PUBLIC_EVENT_DATETIME` format: Server Component catches `Invalid Date` and redirects to `/login`
+   - Invalid `EVENT_DATETIME` format: Server Component catches `Invalid Date` and redirects to `/login`
    - Extremely large countdown (>99 days): Verify 3-digit days don't overflow digit card layout (design shows 2 digit cards — need to truncate at 99 or add a third card)
    - Browser tab goes to sleep: When tab becomes visible again (`visibilitychange` event), recalculate immediately instead of waiting for next `setInterval` tick
 
@@ -303,7 +301,7 @@ if (!eventTime || new Date(eventTime).getTime() <= Date.now()) {
 | "Digital Numbers" font not available | High | Medium | CSS fallback `monospace` already in place. Visual fidelity degrades gracefully. TODO in `layout.tsx` tracks resolution. |
 | Background image too large (slow load) | Medium | Medium | Optimize to WebP, use `priority` on `<Image>`, ensure `#00101A` fallback renders immediately |
 | Timer drift over long sessions | Low | Low | 1s `setInterval` drift is negligible for minute-level display. `visibilitychange` listener re-syncs when tab returns to foreground. |
-| `NEXT_PUBLIC_EVENT_DATETIME` not set in prod | Medium | High | Server Component redirects to `/login` immediately. `console.warn` logs the missing config for operators. |
+| `EVENT_DATETIME` constant has past date in prod | Medium | High | Server Component redirects to `/login` immediately when event date has passed. |
 | Page statically generated (stale serverTime) | Medium | High | `export const dynamic = "force-dynamic"` on page.tsx ensures fresh render on every request. |
 | Countdown > 99 days (3-digit overflow) | Low | Medium | Design has 2 digit cards. Cap display at 99 days, or add conditional 3rd card. Clarify with design team. |
 
@@ -393,7 +391,7 @@ if (!eventTime || new Date(eventTime).getTime() <= Date.now()) {
 
 ### External Dependencies
 
-- `NEXT_PUBLIC_EVENT_DATETIME` environment variable must be set
+- `EVENT_DATETIME` constant in `src/hooks/use-countdown.ts` must be set to the correct event date
 - Background image asset from Figma design
 
 ---

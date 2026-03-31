@@ -59,7 +59,7 @@
 
 ### Server Component Page (US1)
 
-- [x] T011 Implement Server Component page: `export const dynamic = "force-dynamic"`; `export const metadata` with title "Countdown | Sun Annual Awards 2025"; read `NEXT_PUBLIC_EVENT_DATETIME` env var; validate date is parseable — if missing or invalid → `redirect("/login")` + `console.warn`; if event already started → `redirect("/login")`; otherwise render `<CountdownPrelaunchPage eventStartTime={eventTime} serverTime={new Date().toISOString()} />` | src/app/countdown/page.tsx
+- [x] T011 Implement Server Component page: `export const dynamic = "force-dynamic"`; `export const metadata` with title "Countdown | Sun Annual Awards 2025"; import `EVENT_DATETIME` constant from `@/hooks/use-countdown`; if event already started → `redirect("/login")`; otherwise render `<CountdownPrelaunchPage eventStartTime={EVENT_DATETIME} serverTime={new Date().toISOString()} />` | src/app/countdown/page.tsx
 
 **Checkpoint**: User Story 1 complete — countdown page renders with correct timer, glassmorphism cards, background, and heading. All tests pass.
 
