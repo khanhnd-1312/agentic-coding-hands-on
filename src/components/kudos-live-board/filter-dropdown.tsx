@@ -56,6 +56,17 @@ export function FilterDropdown({
 		}
 	}, [isOpen, focusedIndex]);
 
+	// Auto-scroll to selected item when dropdown opens
+	useEffect(() => {
+		if (!isOpen || selected === null) return;
+		requestAnimationFrame(() => {
+			const selectedIdx = options.findIndex((o) => o.id === selected);
+			if (selectedIdx >= 0) {
+				optionRefs.current[selectedIdx]?.scrollIntoView({ block: "nearest" });
+			}
+		});
+	}, [isOpen, selected, options]);
+
 	function handleToggle() {
 		if (isOpen) {
 			close();
@@ -141,9 +152,13 @@ export function FilterDropdown({
 					role="listbox"
 					aria-labelledby={triggerId}
 					onKeyDown={handleListboxKeyDown}
-					className="absolute top-full left-0 mt-1 min-w-full flex flex-col p-1.5 bg-[#00070C] border border-[var(--klb-color-border-gold)] rounded-lg z-50 transition-[opacity,transform] duration-150 ease-out origin-top"
+					className="absolute top-full left-0 mt-1 min-w-full max-w-[calc(100vw-32px)] flex flex-col p-1.5 bg-[#00070C] border border-[#998C5F] rounded-lg z-50 max-h-87 overflow-y-auto transition-[opacity,transform] duration-150 ease-out origin-top"
 				>
-					{options.map((option, index) => (
+					{options.length === 0 ? (
+						<li className="p-4 text-base font-bold text-white/50 text-center cursor-default" aria-disabled="true">
+							Không có dữ liệu
+						</li>
+					) : options.map((option, index) => (
 						<li
 							key={option.id}
 							ref={(el) => {
@@ -154,13 +169,13 @@ export function FilterDropdown({
 							tabIndex={focusedIndex === index ? 0 : -1}
 							onClick={() => handleSelect(option.id)}
 							className={[
-								"cursor-pointer px-4 py-2 rounded",
-								"font-[family-name:var(--font-montserrat)] text-sm font-bold text-white",
+								"cursor-pointer p-4 h-14 flex items-center rounded",
+								"font-[family-name:var(--font-montserrat)] text-base font-bold leading-6 tracking-[0.5px] text-white",
 								"hover:bg-[rgba(255,234,158,0.1)]",
 								"transition-colors duration-150 ease-in-out",
-								"outline-none focus-visible:outline-2 focus-visible:outline-[var(--klb-color-border-gold)] focus-visible:-outline-offset-2",
+								"outline-none focus-visible:outline-2 focus-visible:outline-[#15D5CA] focus-visible:-outline-offset-2",
 								selected === option.id
-									? "bg-[rgba(255,234,158,0.2)]"
+									? "bg-[rgba(255,234,158,0.1)] [text-shadow:0_4px_4px_rgba(0,0,0,0.25),0_0_6px_#FAE287]"
 									: "",
 							]
 								.filter(Boolean)
@@ -170,6 +185,7 @@ export function FilterDropdown({
 						</li>
 					))}
 				</ul>
+
 			)}
 		</div>
 	);

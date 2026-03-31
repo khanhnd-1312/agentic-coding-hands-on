@@ -99,7 +99,7 @@ export function SpotlightBoard({
 	return (
 		<div
 			aria-label="Spotlight Board — interactive word cloud of kudos recipients"
-			className="relative w-full h-[548px] border border-[var(--klb-color-border-gold)] rounded-2xl overflow-hidden"
+			className="relative w-full h-[548px] border border-[var(--klb-color-border-gold)] rounded-[47.14px] overflow-hidden"
 			style={{
 				background: "#00101a",
 			}}
@@ -216,7 +216,7 @@ export function SpotlightBoard({
 				})}
 			</div>
 
-			{/* Bottom bar: Activity log (left) + Expand/Compress (right) */}
+			{/* Bottom bar: Activity log (left) + Pan/Zoom toggle (right) */}
 			<div className="absolute bottom-0 left-0 right-0 z-10 flex items-end justify-between px-6 pb-4">
 				{/* Activity log — progressive opacity fade (earlier = more transparent) */}
 				<div className="flex flex-col gap-0.5 max-w-[500px]">
@@ -233,50 +233,19 @@ export function SpotlightBoard({
 					))}
 				</div>
 
-				{/* Expand / Compress icons — stacked vertically */}
-				<div className="flex flex-col gap-1">
-					<button
-						type="button"
-						onClick={() => setPanZoomEnabled((prev) => !prev)}
-						aria-pressed={panZoomEnabled}
-						title={panZoomTooltip}
-						className="p-1.5 rounded-lg transition-colors cursor-pointer text-[var(--klb-color-text-white)] hover:text-[var(--klb-color-accent-gold)]"
-					>
-						{/* Expand outward arrows */}
-						<svg
-							width={20}
-							height={20}
-							viewBox="0 0 24 24"
-							fill="none"
-							aria-hidden="true"
-						>
-							<path
-								d="M21 3V8H19V5.41L14.41 10L13 8.59L17.59 4H15V2H20C20.55 2 21 2.45 21 3ZM3 3V8H5V5.41L9.59 10L11 8.59L6.41 4H9V2H4C3.45 2 3 2.45 3 3ZM3 21V16H5V18.59L9.59 14L11 15.41L6.41 20H9V22H4C3.45 22 3 21.55 3 21ZM21 21V16H19V18.59L14.41 14L13 15.41L17.59 20H15V22H20C20.55 22 21 21.55 21 21Z"
-								fill="currentColor"
-							/>
-						</svg>
-					</button>
-					<button
-						type="button"
-						onClick={() => setPanZoomEnabled((prev) => !prev)}
-						title={panZoomTooltip}
-						className="p-1.5 rounded-lg transition-colors cursor-pointer text-[var(--klb-color-text-white)] hover:text-[var(--klb-color-accent-gold)]"
-					>
-						{/* Compress inward arrows */}
-						<svg
-							width={20}
-							height={20}
-							viewBox="0 0 24 24"
-							fill="none"
-							aria-hidden="true"
-						>
-							<path
-								d="M15 3L17.3 5.3L14.41 8.17L15.83 9.59L18.7 6.7L21 9V3H15ZM3 9L5.3 6.7L8.17 9.59L9.59 8.17L6.7 5.3L9 3H3V9ZM9 21L6.7 18.7L9.59 15.83L8.17 14.41L5.3 17.3L3 15V21H9ZM21 15L18.7 17.3L15.83 14.41L14.41 15.83L17.3 18.7L15 21H21V15Z"
-								fill="currentColor"
-							/>
-						</svg>
-					</button>
-				</div>
+				{/* B.7.2 — Single Pan/Zoom toggle button */}
+				<button
+					type="button"
+					onClick={() => setPanZoomEnabled((prev) => !prev)}
+					aria-pressed={panZoomEnabled}
+					title={panZoomTooltip}
+					className="p-1.5 rounded-lg transition-colors cursor-pointer text-[var(--klb-color-text-white)] hover:text-[var(--klb-color-accent-gold)]"
+				>
+					<Icon
+						name="pan-zoom"
+						size={20}
+					/>
+				</button>
 			</div>
 		</div>
 	);

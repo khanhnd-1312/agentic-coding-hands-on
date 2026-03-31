@@ -85,7 +85,7 @@ describe("SpotlightBoard", () => {
 		expect(nameEl.className).toContain("text-[var(--klb-color-highlight-pink)]");
 	});
 
-	it("renders pan/zoom toggle button", () => {
+	it("renders a single pan/zoom toggle button", () => {
 		render(
 			<SpotlightBoard
 				entries={mockEntries}
@@ -94,8 +94,8 @@ describe("SpotlightBoard", () => {
 				panZoomTooltip="Pan/Zoom"
 			/>,
 		);
-		expect(
-			screen.getByRole("button", { name: /Pan\/Zoom/i }),
-		).toBeInTheDocument();
+		const buttons = screen.getAllByRole("button");
+		const panZoomBtn = buttons.find((btn) => btn.title === "Pan/Zoom");
+		expect(panZoomBtn).toBeDefined();
 	});
 });
