@@ -35,7 +35,7 @@ export function LoginPage({ initialError, initialLang }: LoginPageProps) {
 			/>
 
 			{/* Header */}
-			<header className="w-full h-20 flex justify-between items-center py-3 px-4 md:px-12 lg:px-36 bg-[rgba(11,15,18,0.8)] backdrop-blur-sm absolute top-0 z-10">
+			<header className="w-full h-20 flex justify-between items-center py-3 px-4 md:px-12 lg:px-36 bg-[rgba(11,15,18,0.8)] backdrop-blur-sm absolute top-0 z-20">
 				<Image
 					src="/images/login/logo.png"
 					alt="SAA 2025 logo"

@@ -331,6 +331,43 @@ describe("LanguageSelector", () => {
 		);
 	});
 
+	// --- Controlled Mode ---
+
+	it("uses controlled isOpen prop when provided", () => {
+		const mockToggle = vi.fn();
+		render(
+			<LanguageSelector
+				lang="vi"
+				onLangChange={mockOnLangChange}
+				isOpen={true}
+				onToggle={mockToggle}
+			/>
+		);
+		expect(screen.getByRole("listbox")).toBeInTheDocument();
+	});
+
+	it("calls onToggle when trigger clicked in controlled mode", () => {
+		const mockToggle = vi.fn();
+		render(
+			<LanguageSelector
+				lang="vi"
+				onLangChange={mockOnLangChange}
+				isOpen={false}
+				onToggle={mockToggle}
+			/>
+		);
+		fireEvent.click(screen.getByRole("button", { name: "Chọn ngôn ngữ" }));
+		expect(mockToggle).toHaveBeenCalledWith(true);
+	});
+
+	it("falls back to internal state when isOpen/onToggle not provided", () => {
+		render(<LanguageSelector lang="vi" onLangChange={mockOnLangChange} />);
+		const button = screen.getByRole("button", { name: "Chọn ngôn ngữ" });
+		expect(button).toHaveAttribute("aria-expanded", "false");
+		fireEvent.click(button);
+		expect(button).toHaveAttribute("aria-expanded", "true");
+	});
+
 	// --- Phase 4: Persistence + Edge Cases (US3) ---
 
 	it("clicking already-selected option closes dropdown without calling onLangChange", () => {

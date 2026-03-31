@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LanguageSelector } from "@/components/login/language-selector";
+import { ProfileDropdown } from "@/components/homepage/profile-dropdown";
 import { Icon } from "@/components/ui/icon";
 import { homepageDictionary } from "@/i18n/homepage";
 import type { LanguagePreference } from "@/types/login";
@@ -25,6 +26,7 @@ export function Header({ lang = "vi", onLangChange, activePage }: HeaderProps) {
 		: pathname;
 	const handleLangChange = onLangChange ?? (() => {});
 	const [notificationCount, setNotificationCount] = useState(0);
+	const [openDropdown, setOpenDropdown] = useState<"lang" | "profile" | null>(null);
 	const t = homepageDictionary[lang].nav;
 
 	const navLinks = [
@@ -115,23 +117,18 @@ export function Header({ lang = "vi", onLangChange, activePage }: HeaderProps) {
 				</button>
 
 				{/* Language selector */}
-				<LanguageSelector lang={lang} onLangChange={handleLangChange} />
+				<LanguageSelector
+					lang={lang}
+					onLangChange={handleLangChange}
+					isOpen={openDropdown === "lang"}
+					onToggle={(open) => setOpenDropdown(open ? "lang" : null)}
+				/>
 
-				{/* Avatar button */}
-				<button
-					type="button"
-					aria-label={t.account}
-					className={[
-						"w-10 h-10 rounded",
-						"border border-[#998C5F]",
-						"flex items-center justify-center",
-						"transition-[box-shadow] duration-150 ease-in-out",
-						"hover:shadow-[0_0_0_2px_#998C5F]",
-						"focus:outline-2 focus:outline-[#15D5CA] focus:outline-offset-2",
-					].join(" ")}
-				>
-					<Icon name="user-avatar" size={24} className="[&_path]:fill-white" />
-				</button>
+				{/* Profile dropdown */}
+				<ProfileDropdown
+					isOpen={openDropdown === "profile"}
+					onToggle={(open) => setOpenDropdown(open ? "profile" : null)}
+				/>
 			</div>
 		</header>
 	);

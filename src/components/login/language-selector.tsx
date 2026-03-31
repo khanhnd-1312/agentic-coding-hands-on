@@ -7,6 +7,10 @@ import type { LanguagePreference } from "@/types/login";
 interface LanguageSelectorProps {
 	lang: LanguagePreference;
 	onLangChange: (lang: LanguagePreference) => void;
+	/** Controlled mode: when provided, the parent controls open/close state */
+	isOpen?: boolean;
+	/** Controlled mode: callback when dropdown wants to toggle */
+	onToggle?: (open: boolean) => void;
 }
 
 const LANG_OPTIONS = [
@@ -14,8 +18,16 @@ const LANG_OPTIONS = [
 	{ value: "en" as const, label: "EN", flag: "flag-en" as const },
 ];
 
-export function LanguageSelector({ lang, onLangChange }: LanguageSelectorProps) {
-	const [isOpen, setIsOpen] = useState(false);
+export function LanguageSelector({ lang, onLangChange, isOpen: controlledIsOpen, onToggle }: LanguageSelectorProps) {
+	const [internalIsOpen, setInternalIsOpen] = useState(false);
+	const isControlled = controlledIsOpen !== undefined;
+	const isOpen = isControlled ? controlledIsOpen : internalIsOpen;
+	const setIsOpen = isControlled
+		? (value: boolean | ((prev: boolean) => boolean)) => {
+				const next = typeof value === "function" ? value(isOpen) : value;
+				onToggle?.(next);
+			}
+		: setInternalIsOpen;
 	const [focusedIndex, setFocusedIndex] = useState(-1);
 	const currentOption = LANG_OPTIONS.find((o) => o.value === lang)!;
 	const triggerId = useId();

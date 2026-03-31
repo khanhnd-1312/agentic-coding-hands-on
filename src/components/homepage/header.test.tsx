@@ -1,8 +1,9 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 
 vi.mock("next/navigation", () => ({
 	usePathname: vi.fn(() => "/"),
+	useRouter: vi.fn(() => ({ push: vi.fn() })),
 }));
 
 vi.mock("next/image", () => ({
@@ -31,9 +32,22 @@ vi.mock("next/link", () => ({
 	),
 }));
 
+vi.mock("@/libs/supabase/client", () => ({
+	createClient: () => ({ auth: { signOut: vi.fn().mockResolvedValue({ error: null }) } }),
+}));
+
 vi.mock("../login/language-selector", () => ({
-	LanguageSelector: ({ lang }: { lang: string }) => (
-		<div data-testid="language-selector" data-lang={lang} />
+	LanguageSelector: ({ lang, isOpen, onToggle }: { lang: string; isOpen?: boolean; onToggle?: (open: boolean) => void }) => (
+		<div data-testid="language-selector" data-lang={lang}>
+			<button
+				data-testid="lang-trigger"
+				aria-expanded={isOpen ?? false}
+				onClick={() => onToggle?.(!isOpen)}
+			>
+				{lang}
+			</button>
+			{isOpen && <div data-testid="lang-dropdown">Language Dropdown</div>}
+		</div>
 	),
 }));
 
@@ -81,9 +95,31 @@ describe("Header", () => {
 		expect(screen.getByTestId("language-selector")).toBeInTheDocument();
 	});
 
-	it("avatar button has aria-label 'Tài khoản'", () => {
+	it("avatar/profile trigger button renders with aria-label", () => {
 		render(<Header />);
-		const avatar = screen.getByRole("button", { name: "Tài khoản" });
+		const avatar = screen.getByRole("button", { name: "User menu" });
 		expect(avatar).toBeInTheDocument();
+	});
+
+	// --- Mutual exclusivity: only one dropdown open at a time ---
+
+	it("language dropdown opens when lang trigger clicked", () => {
+		render(<Header />);
+		const langTrigger = screen.getByTestId("lang-trigger");
+		fireEvent.click(langTrigger);
+		expect(screen.getByTestId("lang-dropdown")).toBeInTheDocument();
+	});
+
+	it("opening avatar dropdown closes language dropdown", () => {
+		render(<Header />);
+		// Open language dropdown
+		const langTrigger = screen.getByTestId("lang-trigger");
+		fireEvent.click(langTrigger);
+		expect(screen.getByTestId("lang-dropdown")).toBeInTheDocument();
+
+		// Click avatar — should close language dropdown
+		const avatar = screen.getByRole("button", { name: "User menu" });
+		fireEvent.click(avatar);
+		expect(screen.queryByTestId("lang-dropdown")).not.toBeInTheDocument();
 	});
 });

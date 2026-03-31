@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { homepageDictionary } from "@/i18n/homepage";
 import type { LanguagePreference } from "@/types/login";
 
@@ -10,6 +13,7 @@ interface FooterProps {
 const NAV_HREFS = ["/", "/awards", "/kudo/live", "/tieu-chuan-chung"];
 
 export function Footer({ lang = "vi" }: FooterProps) {
+	const pathname = usePathname();
 	const t = homepageDictionary[lang].footer;
 	const navLinks = [
 		{ label: t.aboutSaa, href: NAV_HREFS[0] },
@@ -42,21 +46,26 @@ export function Footer({ lang = "vi" }: FooterProps) {
 				aria-label="Footer navigation"
 				className="flex flex-row items-center gap-12 flex-wrap"
 			>
-				{navLinks.map(({ label, href }) => (
-					<Link
-						key={href}
-						href={href}
-						className={[
-							"p-4",
-						"text-white text-base font-bold leading-6 tracking-[0.15px]",
-							"transition-[color] duration-150 ease-in-out",
-							"hover:text-[#FFEA9E]",
-							"focus:outline-2 focus:outline-[#15D5CA] focus:outline-offset-2",
-						].join(" ")}
-					>
-						{label}
-					</Link>
-				))}
+				{navLinks.map(({ label, href }) => {
+					const isActive = pathname === href;
+					return (
+						<Link
+							key={href}
+							href={href}
+							className={[
+								"p-4 rounded",
+								"text-white text-base font-bold leading-6 tracking-[0.15px]",
+								"transition-[color,background-color] duration-150 ease-in-out",
+								"focus:outline-2 focus:outline-[#15D5CA] focus:outline-offset-2",
+								isActive
+									? "bg-[rgba(255,234,158,0.1)]"
+									: "hover:bg-[rgba(255,234,158,0.08)] hover:text-[#FFEA9E]",
+							].join(" ")}
+						>
+							{label}
+						</Link>
+					);
+				})}
 			</nav>
 
 			{/* Copyright */}
