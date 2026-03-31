@@ -12,9 +12,12 @@ export const metadata = {
 	description: "Browse, send, and interact with kudos on the Sun* Live Board",
 };
 
-async function fetchApi<T>(baseUrl: string, path: string): Promise<T | null> {
+async function fetchApi<T>(baseUrl: string, path: string, cookieHeader: string): Promise<T | null> {
 	try {
-		const res = await fetch(`${baseUrl}${path}`, { cache: "no-store" });
+		const res = await fetch(`${baseUrl}${path}`, {
+			cache: "no-store",
+			headers: { cookie: cookieHeader },
+		});
 		if (!res.ok) return null;
 		return (await res.json()) as T;
 	} catch {
@@ -32,22 +35,22 @@ export default async function KudoLivePage() {
 		data: { user },
 	} = await supabase.auth.getUser();
 
-	// In production, require authentication
-	if (!user && process.env.NODE_ENV !== "development") {
+	if (!user) {
 		redirect("/login");
 	}
 
 	const currentUserId = user?.id ?? "";
 	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+	const cookieHeader = cookieStore.toString();
 
-	// Fetch data via API routes (which handle auth and data transformation)
+	// Fetch data via API routes, forwarding auth cookies
 	const [highlightsJson, kudosJson, spotlightJson, statsJson, topGiftsJson] =
 		await Promise.all([
-			fetchApi<{ data: Kudos[] }>(baseUrl, "/api/kudos/highlights"),
-			fetchApi<{ data: Kudos[]; has_more: boolean }>(baseUrl, "/api/kudos?page=1&limit=20"),
-			fetchApi<SpotlightResponse>(baseUrl, "/api/spotlight"),
-			fetchApi<UserStats>(baseUrl, "/api/users/me/stats"),
-			fetchApi<{ items: TopGiftSunner[] }>(baseUrl, "/api/sunners/top-gifts"),
+			fetchApi<{ data: Kudos[] }>(baseUrl, "/api/kudos/highlights", cookieHeader),
+			fetchApi<{ data: Kudos[]; has_more: boolean }>(baseUrl, "/api/kudos?page=1&limit=20", cookieHeader),
+			fetchApi<SpotlightResponse>(baseUrl, "/api/spotlight", cookieHeader),
+			fetchApi<UserStats>(baseUrl, "/api/users/me/stats", cookieHeader),
+			fetchApi<{ items: TopGiftSunner[] }>(baseUrl, "/api/sunners/top-gifts", cookieHeader),
 		]);
 
 	const highlights = highlightsJson?.data ?? [];

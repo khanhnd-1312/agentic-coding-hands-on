@@ -15,8 +15,7 @@ export async function middleware(request: NextRequest) {
 	}
 
 	// Unauthenticated user visiting a protected route → redirect to /login
-	// In development, allow access to all pages without authentication
-	if (!user && pathname !== "/login" && process.env.NODE_ENV !== "development") {
+	if (!user && pathname !== "/login") {
 		return NextResponse.redirect(new URL("/login", request.url), {
 			status: 307,
 		});
