@@ -27,29 +27,29 @@ vi.mock("next/link", () => ({
 	),
 }));
 
-import { KudosBlock } from "./kudos-block";
+import { SunKudosBlock } from "@/components/awards/sun-kudos-block";
 
-describe("KudosBlock", () => {
+describe("SunKudosBlock (shared)", () => {
 	it("renders caption 'Phong trào ghi nhận'", () => {
-		render(<KudosBlock />);
+		render(<SunKudosBlock />);
 		expect(screen.getByText("Phong trào ghi nhận")).toBeInTheDocument();
 	});
 
 	it("renders title 'Sun* Kudos' in accent color", () => {
-		render(<KudosBlock />);
+		render(<SunKudosBlock />);
 		const title = screen.getByText("Sun* Kudos");
 		expect(title).toBeInTheDocument();
 		expect(title.className).toMatch(/FFEA9E|text-\[#FFEA9E\]/);
 	});
 
 	it("'Chi tiết' CTA link navigates to /kudo/live", () => {
-		render(<KudosBlock />);
-		const link = screen.getByRole("link", { name: /chi tiết/i });
+		render(<SunKudosBlock />);
+		const link = screen.getByRole("link", { name: /kudos/i });
 		expect(link).toHaveAttribute("href", "/kudo/live");
 	});
 
 	it("container has dark background class", () => {
-		const { container } = render(<KudosBlock />);
+		const { container } = render(<SunKudosBlock />);
 		const card = container.firstChild as HTMLElement;
 		expect(card.className).toMatch(/0F0F0F|bg-\[#0F0F0F\]|kudos-bg/);
 	});

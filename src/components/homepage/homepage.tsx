@@ -5,7 +5,7 @@ import { Header } from "./header";
 import { HeroSection } from "./hero-section";
 import { AwardsSection } from "./awards-section";
 import { SkeletonCards } from "./skeleton-cards";
-import { KudosBlock } from "./kudos-block";
+import { SunKudosBlock } from "@/components/awards/sun-kudos-block";
 import { Footer } from "./footer";
 import { WidgetButton } from "./widget-button";
 import type { AwardCategory } from "@/types/homepage";
@@ -44,7 +44,7 @@ export function HomePage({ awards = [], initialLang = "vi" }: HomePageProps) {
 						<AwardsSection awards={awards} lang={lang} />
 					</Suspense>
 
-					<KudosBlock lang={lang} />
+					<SunKudosBlock lang={lang} />
 				</div>
 			</main>
 
