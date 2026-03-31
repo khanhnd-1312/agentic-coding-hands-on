@@ -27,19 +27,37 @@ export function AwardInfoCard({ award: rawAward, lang = "vi", reverse = false }:
 					reverse ? "lg:flex-row-reverse" : "",
 				].join(" ")}
 			>
-				{/* Award image */}
-				{award.detailImageUrl && (
-					<div className="w-full max-w-70 md:w-60 md:h-60 lg:w-84 lg:h-84 shrink-0 overflow-hidden border border-[#FFEA9E] rounded-3xl mix-blend-screen shadow-[0_4px_4px_rgba(0,0,0,0.25),0_0_6px_#FAE287]">
-						<Image
-							src={award.detailImageUrl}
-							alt={`${t.awardImageAlt} ${award.name}`}
-							width={336}
-							height={336}
-							sizes="(max-width: 768px) 280px, (max-width: 1024px) 240px, 336px"
-							className="rounded-3xl w-full h-full object-cover"
-						/>
+				{/* Award image — layered: shared medal background + award name label overlay (matching Homepage C2 design) */}
+				<div
+					className={[
+						"relative w-84 h-84 max-w-full shrink-0",
+						"border-[0.955px] border-[#FFEA9E] rounded-3xl overflow-hidden",
+						"shadow-[0_4px_4px_rgba(0,0,0,0.25),0_0_6px_#FAE287]",
+					].join(" ")}
+				>
+					{/* Shared 336x336 medal background */}
+					<Image
+						src="/images/homepage/award-bg.png"
+						alt=""
+						fill
+						className="object-cover object-center"
+						sizes="336px"
+						aria-hidden="true"
+					/>
+
+					{/* Award name label centered over the medal */}
+					<div className="absolute inset-0 flex items-center justify-center">
+						<div className="relative w-55 h-17.5 mix-blend-screen">
+							<Image
+								src={award.thumbnailUrl}
+								alt={`${t.awardImageAlt} ${award.name}`}
+								fill
+								className="object-contain object-center"
+								sizes="220px"
+							/>
+						</div>
 					</div>
-				)}
+				</div>
 
 				{/* Content block */}
 				<div className="w-full lg:w-120 flex flex-col gap-8 rounded-2xl backdrop-blur-[32px]">
