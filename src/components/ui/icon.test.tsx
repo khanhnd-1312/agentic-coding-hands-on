@@ -120,4 +120,13 @@ describe("Icon", () => {
 		expect(svg).toHaveAttribute("height", "24");
 		expect(svg).toHaveAttribute("aria-hidden", "true");
 	});
+
+	it("renders check-circle with 24×24 SVG", () => {
+		const { container } = render(<Icon name="check-circle" size={24} />);
+		const svg = container.querySelector("svg");
+		expect(svg).toBeInTheDocument();
+		expect(svg).toHaveAttribute("width", "24");
+		expect(svg).toHaveAttribute("height", "24");
+		expect(svg).toHaveAttribute("aria-hidden", "true");
+	});
 });
