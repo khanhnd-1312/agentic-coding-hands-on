@@ -12,10 +12,10 @@
 | Metric | Value |
 |--------|-------|
 | Total Frames | 17 |
-| Fully Specified | 8 (Login, Homepage SAA, Hệ thống giải, Countdown - Prelaunch, Dropdown-ngôn ngữ, Sun* Kudos - Live board, Viết Kudo, Like Kudos) |
+| Fully Specified | 9 (Login, Homepage SAA, Hệ thống giải, Countdown - Prelaunch, Dropdown-ngôn ngữ, Sun* Kudos - Live board, Viết Kudo, Like Kudos, Dropdown-profile) |
 | In Progress | 0 |
-| Remaining | 10 |
-| Completion | 41% |
+| Remaining | 9 |
+| Completion | 47% |
 
 ---
 
@@ -33,7 +33,7 @@
 | Open secret box- chưa mở | `1466:7676` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/1466:7676) | pending | - | `POST /secretbox/open` | ← Homepage |
 | Addlink Box | `1002:12917` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/1002:12917) | pending | - | `POST /links` | ← Viết Kudo |
 | Dropdown-ngôn ngữ | `721:4942` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/721:4942) | ✅ spec | `specs/721-4942-Dropdown-ngon-ngu/` | none (client-side) | ← Login header, ← Homepage header |
-| Dropdown-profile | `721:5223` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/721:5223) | pending | - | `supabase.auth.signOut` | ← Homepage |
+| Dropdown-profile | `721:5223` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/721:5223) | ✅ spec | `specs/721-5223-Dropdown-profile/` | `supabase.auth.signOut` | ← Homepage, → Profile, → Login |
 | Dropdown-profile Admin | `721:5277` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/721:5277) | pending | - | `supabase.auth.signOut` | ← Homepage (admin) |
 | Dropdown Phòng ban | `721:5684` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/721:5684) | pending | - | `GET /departments` | ← Viết Kudo |
 | Dropdown Hashtag filter | `721:5580` | [Link](https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/frames/721:5580) | pending | - | `GET /hashtags` | ← Homepage |
